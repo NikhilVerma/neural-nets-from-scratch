@@ -1,0 +1,24 @@
+{
+  "name": "aits",
+  "module": "src/server.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --hot src/server.ts",
+    "start": "bun src/server.ts",
+    "test": "bun run src/stages/1.1/test.ts",
+    "train": "bun run src/stages/1.1/main.ts",
+    "prettify": "prettier --config .prettierrc.cjs --cache --cache-location .cache/prettier --write ."
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "bun-plugin-tailwind": "^0.1.2",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.14"
+  }
+}
