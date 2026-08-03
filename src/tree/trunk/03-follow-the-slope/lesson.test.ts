@@ -1,10 +1,9 @@
 import { test, expect } from "bun:test";
 import { makeRandom } from "../../../learned/random.ts";
 import { makeCurveExamples, makeExamples } from "../../../learned/data.ts";
-import { nudgeStep, startClimb } from "../02-nudge-and-keep/main.ts";
-import { SECRET_RULE, SlopeMachine } from "./main.ts";
+import { passesToReach, SECRET_RULE, SlopeMachine, testRunsToReach, type Start } from "./main.ts";
 
-const START = { multiplier: -3.2, addOn: 4.1 };
+const START: Start = { weight: -3.2, bias: 4.1 };
 
 function lineExamples() {
 	return makeExamples(SECRET_RULE, 60, 0, makeRandom(7));
@@ -12,7 +11,7 @@ function lineExamples() {
 
 test("following the slope finds the rule", () => {
 	const examples = lineExamples();
-	const machine = new SlopeMachine(START.multiplier, START.addOn);
+	const machine = new SlopeMachine(START.weight, START.bias);
 
 	for (let pass = 0; pass < 300; pass++) {
 		machine.step(examples);
@@ -23,13 +22,13 @@ test("following the slope finds the rule", () => {
 	expect(machine.scoreOn(examples)).toBeLessThan(0.01);
 });
 
-test("the slope points the way the score actually moves", () => {
+test("the slope says how far the score really moves", () => {
 	const examples = lineExamples();
-	const machine = new SlopeMachine(START.multiplier, START.addOn);
+	const machine = new SlopeMachine(START.weight, START.bias);
 	const { weightSlope, biasSlope } = machine.slopesOn(examples);
 	const scoreHere = machine.scoreOn(examples);
 
-	// Nudge each knob a hair uphill and check the score moved the way the slope said.
+	// Turn each knob up by a hair and measure. The algebra should predict what we see.
 	const hair = 0.0001;
 	const nudgedWeight = new SlopeMachine(machine.weight + hair, machine.bias);
 	const nudgedBias = new SlopeMachine(machine.weight, machine.bias + hair);
@@ -38,24 +37,25 @@ test("the slope points the way the score actually moves", () => {
 	expect((nudgedBias.scoreOn(examples) - scoreHere) / hair).toBeCloseTo(biasSlope, 2);
 });
 
-test("it gets there for less than nudging costs", () => {
+test("one pass produces the slope for every knob", () => {
+	const examples = lineExamples();
+	const machine = new SlopeMachine(START.weight, START.bias);
+	machine.step(examples);
+
+	// Lesson 02 pays two test-runs per knob per step; this pays one pass, whatever the knobs.
+	expect(machine.passes).toBe(1);
+});
+
+test("it reaches the same score for fewer sweeps than nudging", () => {
 	const examples = lineExamples();
 	const target = 0.001;
 
-	const machine = new SlopeMachine(START.multiplier, START.addOn);
-	while (machine.scoreOn(examples) > target && machine.passes < 10000) {
-		machine.step(examples);
-	}
+	const passes = passesToReach(target, examples, START);
+	const testRuns = testRunsToReach(target, examples, START);
 
-	const climb = startClimb(examples, START);
-	while (climb.score > target && climb.steps < 10000) {
-		nudgeStep(climb, examples);
-	}
-
-	// Both reached the same score. One sweep of the examples is the unit of work either way.
-	expect(machine.scoreOn(examples)).toBeLessThanOrEqual(target);
-	expect(climb.score).toBeLessThanOrEqual(target);
-	expect(machine.passes).toBeLessThan(climb.testRuns);
+	// A pass and a test-run are the same unit of work: one sweep of every example.
+	expect(passes).toBeGreaterThan(0);
+	expect(passes).toBeLessThan(testRuns);
 });
 
 test("on curved data the score floors out far above zero", () => {
@@ -69,7 +69,12 @@ test("on curved data the score floors out far above zero", () => {
 	const scoreAtEnd = machine.scoreOn(curved);
 	expect(scoreAtEnd).toBeGreaterThan(3);
 
-	// And it is not still descending — a thousand more passes change nothing.
+	// And it is not still descending: the slopes are at zero and a thousand more passes
+	// change nothing. The machine has arrived, and the answer is still wrong.
+	const slopes = machine.slopesOn(curved);
+	expect(Math.abs(slopes.weightSlope)).toBeLessThan(1e-6);
+	expect(Math.abs(slopes.biasSlope)).toBeLessThan(1e-6);
+
 	for (let pass = 0; pass < 1000; pass++) {
 		machine.step(curved);
 	}
@@ -89,4 +94,18 @@ test("straight data goes near zero, curved data does not — same machine", () =
 
 	expect(onStraight.scoreOn(straight)).toBeLessThan(0.001);
 	expect(onCurve.scoreOn(curved)).toBeGreaterThan(3);
+});
+
+test("a step size past 0.14 blows up on this data", () => {
+	const examples = makeExamples(SECRET_RULE, 60, 1, makeRandom(7));
+
+	const steady = new SlopeMachine(START.weight, START.bias, 0.06);
+	const runaway = new SlopeMachine(START.weight, START.bias, 0.15);
+	for (let pass = 0; pass < 200; pass++) {
+		steady.step(examples);
+		runaway.step(examples);
+	}
+
+	expect(steady.scoreOn(examples)).toBeLessThan(1);
+	expect(runaway.scoreOn(examples)).toBeGreaterThan(1e6);
 });

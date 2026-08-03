@@ -2,35 +2,38 @@ import { test, expect } from "bun:test";
 import {
 	makeExamples,
 	makeRandom,
-	scoreGuess,
+	mistakeScore,
 	SECRET_RULE,
 	startSearch,
 	tryManyGuesses,
 	tryOneGuess
 } from "./main.ts";
 
-test("a perfect answer scores zero, anything else scores more", () => {
-	const noiseless = [
-		{ x: -2, y: -1 },
-		{ x: 0, y: 3 },
-		{ x: 4, y: 11 }
-	];
+// Pairs with no wobble in them, straight off the secret rule: y = 2x + 3.
+const CLEAN_PAIRS = [
+	{ x: -2, y: -1 },
+	{ x: 0, y: 3 },
+	{ x: 4, y: 11 }
+];
 
-	expect(scoreGuess(SECRET_RULE, noiseless)).toBe(0);
-	expect(scoreGuess({ multiplier: 2, addOn: 3.5 }, noiseless)).toBeGreaterThan(0);
-	expect(scoreGuess({ multiplier: 2, addOn: 2.5 }, noiseless)).toBeGreaterThan(0);
+test("a perfect setting scores zero, anything else scores more", () => {
+	expect(mistakeScore(SECRET_RULE, CLEAN_PAIRS)).toBe(0);
+	expect(mistakeScore({ multiplier: 2, addOn: 3.5 }, CLEAN_PAIRS)).toBeGreaterThan(0);
+	expect(mistakeScore({ multiplier: 2, addOn: 2.5 }, CLEAN_PAIRS)).toBeGreaterThan(0);
 });
 
 test("a bigger miss scores worse than a smaller one", () => {
-	const noiseless = [
-		{ x: -2, y: -1 },
-		{ x: 0, y: 3 },
-		{ x: 4, y: 11 }
-	];
-
-	const small = scoreGuess({ multiplier: 2, addOn: 3.1 }, noiseless);
-	const large = scoreGuess({ multiplier: 2, addOn: 5 }, noiseless);
+	const small = mistakeScore({ multiplier: 2, addOn: 3.1 }, CLEAN_PAIRS);
+	const large = mistakeScore({ multiplier: 2, addOn: 5 }, CLEAN_PAIRS);
 	expect(large).toBeGreaterThan(small);
+});
+
+test("misses do not cancel out: too high on one pair, too low on the next still scores", () => {
+	const tilted = [
+		{ x: -1, y: 0 }, // the rule says 1, so this pair pulls the machine down
+		{ x: 1, y: 6 } //  the rule says 5, so this one pulls it back up
+	];
+	expect(mistakeScore(SECRET_RULE, tilted)).toBeGreaterThan(0);
 });
 
 test("the best score never gets worse as guesses pile up", () => {
@@ -78,7 +81,7 @@ test("2,000 guesses get roughly right — and no closer", () => {
 	}
 });
 
-test("improvements dry up: the last quarter of a long run buys almost nothing", () => {
+test("improvements dry up: the last nine tenths of a long run buy almost nothing", () => {
 	const random = makeRandom(7);
 	const examples = makeExamples(60, random);
 	const search = startSearch();
@@ -90,4 +93,27 @@ test("improvements dry up: the last quarter of a long run buys almost nothing", 
 
 	// Nine times the guesses, and the score barely moves.
 	expect(scoreEarly - scoreLate).toBeLessThan(0.1);
+});
+
+// The page quotes these numbers, so a change to the code that moves them should
+// fail here rather than quietly make the lesson wrong.
+test("the run the lesson quotes: 20,000 guesses from seed 7", () => {
+	const random = makeRandom(7);
+	const examples = makeExamples(60, random);
+	const search = startSearch();
+
+	const recordsAt: number[] = [];
+	for (let guess = 1; guess <= 20000; guess++) {
+		if (tryOneGuess(search, examples, random)) recordsAt.push(guess);
+	}
+
+	expect(recordsAt).toEqual([1, 4, 40, 97, 1002, 1748, 10222, 11565]);
+	expect(search.guessesSinceImprovement).toBe(8435);
+	expect(search.bestScore.toFixed(3)).toBe("0.379");
+	expect(search.best.multiplier.toFixed(3)).toBe("2.075");
+	expect(search.best.addOn.toFixed(3)).toBe("3.204");
+	// The wobble sets the scale: even the secret rule does not score zero.
+	expect(mistakeScore(SECRET_RULE, examples).toFixed(3)).toBe("0.429");
+	// And the best setting slips under the rule's own score by chasing that wobble.
+	expect(search.bestScore).toBeLessThan(mistakeScore(SECRET_RULE, examples));
 });

@@ -7,10 +7,22 @@
  */
 
 import type { HTMLBundle } from "bun";
-import { NODES } from "./curriculum.ts";
+import { NODES, nodeById } from "./curriculum.ts";
 import landing from "./site/index.html";
 
-const routes: Record<string, HTMLBundle> = { "/": landing };
+// Lesson pages display their own main.ts (see site/code.ts), fetched raw from here.
+async function serveLessonSource(req: Request): Promise<Response> {
+	const match = new URL(req.url).pathname.match(/^\/source\/(.+)\/main\.ts$/);
+	if (!match || !nodeById.has(match[1]!)) return new Response("Not found", { status: 404 });
+	const file = Bun.file(`${import.meta.dir}/tree/${match[1]}/main.ts`);
+	if (!(await file.exists())) return new Response("Not found", { status: 404 });
+	return new Response(file, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+}
+
+const routes: Record<string, HTMLBundle | ((req: Request) => Promise<Response>)> = {
+	"/": landing,
+	"/source/*": serveLessonSource
+};
 const missing: string[] = [];
 
 for (const node of NODES) {

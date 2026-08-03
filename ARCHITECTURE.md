@@ -11,6 +11,32 @@ Everything here is read by two audiences with different questions:
 
 If you find yourself writing a paragraph-long comment in a `.ts` file, it belongs in the lesson.
 
+## The lesson contract
+
+Every lesson page follows this arc, in this order:
+
+1. **A real problem.** Something a person actually wants and can't do — not an abstract puzzle. Then shrink it, out loud, to the smallest version that still has the problem's shape ("we can't start with faces, so we start with a rule that turns one number into another"). The shrinking is part of the lesson.
+2. **Build the solution in code, on the page.** The reader learns by reading the real code with prose between the pieces — this project's promise is *from concepts and from code*.
+3. **Watch it work** — the interactive demo.
+4. **Watch it break** — run into the next problem live, and state it plainly. It is the child edge, quoted from the manifest.
+5. The jargon box, then the handoff.
+
+**main.ts IS the page.** Each lesson's `main.ts` is written literate-style:
+
+- Block comments starting at column 0 (`/* … */`) are the lesson's prose. They may use a little markdown: `##`/`###` headings, `>` for the problem quote, `-` lists, backtick code spans, `**bold**`.
+- Everything else is the real, runnable code, rendered highlighted between the prose. `//` comments belong to the code and appear inside the code blocks.
+- `//! demo: name` lines mark where the page injects the interactive demo declared as `<template data-demo="name">` in the lesson's `index.html` shell.
+
+The page fetches `/source/<id>/main.ts` from the server and renders it (`site/code.ts`). So the same file is three things at once: the lesson you read in the browser, the program you run with `bun run main.ts`, and the code you open in an editor. Editing it updates all three — a paraphrase cannot drift, because there is no paraphrase. `index.html` is only a shell: head, header, demo templates, jargon box, footer.
+
+## Voice rules
+
+- **Define before use.** No noun appears before the reader knows exactly what it is. If the lesson says "the machine", the machine has already been built in front of them.
+- Active voice, "we" and "you", present tense. One human explaining to another at a whiteboard.
+- **No claim without its evidence next to it** — a number, a demo, or the code itself. If a sentence asserts something the reader can't immediately check below it, cut it or prove it.
+- Short sentences over clause chains. If a sentence works without a word, cut the word.
+- Never "simply", "just", "magic", "elegant" — the reader decides what's simple.
+
 ## Layout
 
 ```

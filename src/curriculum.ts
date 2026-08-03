@@ -38,7 +38,7 @@ export const NODES: CurriculumNode[] = [
 		title: "Guess and check",
 		parent: null,
 		problem:
-			"We're thinking of a rule that turns one number into another. We give the machine examples. Can it find the rule?",
+			"Nobody can write down the steps that tell spam from real mail, or a 7 from a 1. But examples exist by the million. Can a machine work the steps out from examples alone?",
 		solution:
 			"A machine with two knobs guesses random settings and keeps the best. Forces us to invent a way to score a guess.",
 		jargon: ["loss", "parameters"],

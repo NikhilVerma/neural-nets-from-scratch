@@ -1,5 +1,7 @@
-// Browser glue for trunk/02.
+// Browser glue for trunk/02. The lesson itself is main.ts, rendered by site/code.ts;
+// this file only wires the demo controls that main.ts asked for.
 
+import { renderLesson } from "../../../site/code.ts";
 import { boundsForPoints, boundsForSeries, Plot, redrawOnResize } from "../../../site/plot.ts";
 import { makeRandom } from "../../../learned/random.ts";
 import { makeExamples } from "../../../learned/data.ts";
@@ -15,11 +17,29 @@ import {
 
 const SEED = 7;
 const START = { multiplier: -3.2, addOn: 4.1 };
+const AUTO_STOPS_AT = 120;
 
-const scatterCanvas = document.getElementById("scatter") as HTMLCanvasElement | null;
-const scoreCanvas = document.getElementById("scoreChart") as HTMLCanvasElement | null;
-if (!scatterCanvas || !scoreCanvas) throw new Error("lesson canvases are missing");
+// The demo markup lives in <template> tags and is only cloned into the page once the
+// lesson has been rendered, so nothing below may run before this line.
+const container = document.getElementById("lesson");
+if (!container) throw new Error("the lesson container is missing");
+await renderLesson(container);
 
+function requireCanvas(id: string): HTMLCanvasElement {
+	const canvas = document.getElementById(id);
+	if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`canvas #${id} is missing`);
+	return canvas;
+}
+
+function setText(id: string, text: string): void {
+	const element = document.getElementById(id);
+	if (element) element.textContent = text;
+}
+
+// ── the climb ───────────────────────────────────────────────────────────────
+
+const scatterCanvas = requireCanvas("scatter");
+const scoreCanvas = requireCanvas("scoreChart");
 const scatterPlot = new Plot(scatterCanvas);
 const scorePlot = new Plot(scoreCanvas);
 
@@ -43,11 +63,6 @@ function drawScore(): void {
 	scorePlot.series(scoreHistory, scorePlot.color("--plot-best"), 2);
 }
 
-function setText(id: string, text: string): void {
-	const element = document.getElementById(id);
-	if (element) element.textContent = text;
-}
-
 function update(): void {
 	const sign = climb.knobs.addOn < 0 ? "−" : "+";
 	setText("score", climb.score.toFixed(4));
@@ -62,33 +77,31 @@ function update(): void {
 	drawScore();
 }
 
+function takeStep(): void {
+	nudgeStep(climb, examples);
+	scoreHistory.push(climb.score);
+	update();
+}
+
 function stopAuto(): void {
 	if (autoTimer !== null) {
 		clearInterval(autoTimer);
 		autoTimer = null;
 	}
-	const button = document.getElementById("autoStep");
-	if (button) button.textContent = "Auto";
+	setText("autoStep", "Auto");
 }
 
-document.getElementById("oneStep")?.addEventListener("click", () => {
-	nudgeStep(climb, examples);
-	scoreHistory.push(climb.score);
-	update();
-});
+document.getElementById("oneStep")?.addEventListener("click", takeStep);
 
 document.getElementById("autoStep")?.addEventListener("click", () => {
 	if (autoTimer !== null) {
 		stopAuto();
 		return;
 	}
-	const button = document.getElementById("autoStep");
-	if (button) button.textContent = "Stop";
+	setText("autoStep", "Stop");
 	autoTimer = window.setInterval(() => {
-		nudgeStep(climb, examples);
-		scoreHistory.push(climb.score);
-		update();
-		if (climb.steps >= 120) stopAuto();
+		takeStep();
+		if (climb.steps >= AUTO_STOPS_AT) stopAuto();
 	}, 90);
 });
 
@@ -99,12 +112,12 @@ document.getElementById("resetClimb")?.addEventListener("click", () => {
 	update();
 });
 
-// ── the cost of more knobs ──────────────────────────────────────────────────
+// ── the bill, as the knobs multiply ─────────────────────────────────────────
 
-const knobSlider = document.getElementById("knobCount") as HTMLInputElement | null;
+const knobSlider = document.getElementById("knobCount");
 
 function updateKnobCost(): void {
-	if (!knobSlider) return;
+	if (!(knobSlider instanceof HTMLInputElement)) return;
 	const knobs = Number(knobSlider.value);
 	setText("knobsValue", knobs.toLocaleString());
 	setText("perStep", testRunsPerStep(knobs).toLocaleString());

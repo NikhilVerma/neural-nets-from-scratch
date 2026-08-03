@@ -8,6 +8,8 @@
 	--line: #dde1dc;
 	--accent: #3e7a4c;
 	--accent-wash: #eaf1eb;
+	--code-kw: #4b5ec0;
+	--code-num: #a34a88;
 
 	--plot-axis: #c9d0c7;
 	--plot-label: #5a615a;
@@ -30,6 +32,8 @@
 		--line: #313731;
 		--accent: #6fae7d;
 		--accent-wash: #1e2a20;
+	--code-kw: #8b9ae0;
+	--code-num: #c97fb0;
 
 		--plot-axis: #3a423a;
 		--plot-label: #a7aea7;
@@ -48,6 +52,8 @@
 	--line: #313731;
 	--accent: #6fae7d;
 	--accent-wash: #1e2a20;
+	--code-kw: #8b9ae0;
+	--code-num: #c97fb0;
 
 	--plot-axis: #3a423a;
 	--plot-label: #a7aea7;
@@ -65,6 +71,8 @@
 	--line: #dde1dc;
 	--accent: #3e7a4c;
 	--accent-wash: #eaf1eb;
+	--code-kw: #4b5ec0;
+	--code-num: #a34a88;
 
 	--plot-axis: #c9d0c7;
 	--plot-label: #5a615a;
@@ -446,4 +454,34 @@ input[type="range"] {
 .onward .soon {
 	color: var(--soft);
 	font-size: 0.95rem;
+}
+
+/* The lesson's real code, pulled live from its own main.ts (see site/code.ts). */
+pre.code,
+pre[data-code] {
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	padding: 1rem 1.25rem;
+	overflow-x: auto;
+	font-family: var(--mono);
+	font-size: 0.82rem;
+	line-height: 1.6;
+	tab-size: 2;
+}
+pre[data-code] code {
+	font-family: inherit;
+}
+.tok-cmt {
+	color: var(--soft);
+	font-style: italic;
+}
+.tok-str {
+	color: var(--accent);
+}
+.tok-num {
+	color: var(--code-num);
+}
+.tok-kw {
+	color: var(--code-kw);
 }

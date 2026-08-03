@@ -49,6 +49,22 @@ test("the score never gets worse, step after step", () => {
 	}
 });
 
+test("a step that finds nothing halves the nudge and moves nothing", () => {
+	const examples = noiselessExamples();
+	// Start exactly on the answer: no nudge in any direction can improve on it.
+	const climb = startClimb(examples, {
+		multiplier: SECRET_RULE.multiplier,
+		addOn: SECRET_RULE.addOn
+	});
+	const nudgeBefore = climb.nudgeSize;
+
+	nudgeStep(climb, examples);
+
+	expect(climb.nudgeSize).toBe(nudgeBefore / 2);
+	expect(climb.knobs.multiplier).toBe(SECRET_RULE.multiplier);
+	expect(climb.knobs.addOn).toBe(SECRET_RULE.addOn);
+});
+
 test("two knobs cost exactly four test-runs a step", () => {
 	const examples = noiselessExamples();
 	const climb = startClimb(examples, { multiplier: 0, addOn: 0 });
@@ -69,4 +85,28 @@ test("a test-run is one honest sweep of every example", () => {
 	const examples = noiselessExamples();
 	expect(testRun(SECRET_RULE, examples)).toBeCloseTo(0, 10);
 	expect(testRun({ multiplier: 2, addOn: 4 }, examples)).toBeCloseTo(1, 10);
+});
+
+// The opening of this lesson quotes lesson 01's 20,000-roll run. This pins those
+// numbers to lesson 01's actual code, so editing 01 without updating 02's prose fails.
+import {
+	SEED as LESSON_01_SEED,
+	EXAMPLE_COUNT as LESSON_01_EXAMPLE_COUNT,
+	BUDGET as LESSON_01_BUDGET,
+	makeRandom as lesson01MakeRandom,
+	makeExamples as lesson01MakeExamples,
+	startSearch,
+	tryOneGuess
+} from "../01-guess-and-check/main.ts";
+
+test("the lesson-01 run quoted in this lesson's opening still happens exactly that way", () => {
+	const random = lesson01MakeRandom(LESSON_01_SEED);
+	const examples = lesson01MakeExamples(LESSON_01_EXAMPLE_COUNT, random);
+	const search = startSearch();
+	const records: number[] = [];
+	for (let guess = 1; guess <= LESSON_01_BUDGET; guess++) {
+		if (tryOneGuess(search, examples, random)) records.push(guess);
+	}
+	expect(records).toEqual([1, 4, 40, 97, 1002, 1748, 10222, 11565]);
+	expect(LESSON_01_BUDGET - 11565).toBe(8435);
 });

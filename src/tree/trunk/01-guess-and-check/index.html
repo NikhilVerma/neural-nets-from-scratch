@@ -13,154 +13,76 @@
       <h1>Guess and check</h1>
     </header>
 
-    <main>
-      <section>
-        <h2>The problem that brought us here</h2>
-        <blockquote class="problem">
-          We're thinking of a rule that turns one number into another. We give the machine examples.
-          Can it find the rule?
-        </blockquote>
-        <p class="lede">
-          We picked a rule and kept it to ourselves. Then we fed it sixty numbers and wrote down
-          what came out the other side. Those sixty pairs are everything the machine gets. It never
-          sees the rule.
-        </p>
-        <p>
-          The machine is about as simple as a machine can be. It has two knobs. It takes the number
-          you give it, multiplies by whatever the first knob says, then adds whatever the second
-          knob says. That's the whole machine. Set the knobs to the right pair of numbers and it
-          copies our secret rule exactly; set them wrong and it talks nonsense.
-        </p>
-        <p>
-          So the question "can it find the rule?" turns into something much more concrete:
-          <strong>can it find the right two numbers?</strong>
-        </p>
-      </section>
+    <!-- The lesson itself is main.ts, rendered in here by client.ts. -->
+    <main></main>
 
-      <section>
-        <h2>The simplest thing that could work</h2>
-        <p>
-          Set both knobs to random numbers. See how that did. Do it again. Keep whichever setting
-          did best, and throw the rest away. That's it — there is no cleverness in here at all.
-        </p>
-        <p>
-          Except we just smuggled in a word that has no meaning yet: <em>best</em>. The machine
-          can't compare two guesses until we tell it what makes one guess better than another. This
-          is the first thing this whole subject forces us to invent, and it goes like this.
-        </p>
-        <p>
-          Take one example. Run its input through the machine. Compare what came out with what
-          should have come out — that gap is the mistake on that example. Now square it. Squaring
-          does two useful jobs at once: it makes every mistake positive, so being too high can't
-          cancel out being too low, and it punishes big misses far more than small ones. Being off
-          by 4 is not twice as bad as being off by 2; it's four times as bad. Finally, average the
-          squared mistakes across all sixty examples. That average is the guess's
-          <strong>score</strong>. Zero means perfect. Lower is better, always.
-        </p>
-        <p>
-          The other thing we need is a source of random numbers we can replay. We write our own in
-          five lines: give it a starting seed and it produces the same stream of numbers every time.
-          That matters more than it sounds. Every claim in these lessons is "this method beat that
-          one" — and if each run rolled different luck, you could never tell whether the method
-          helped or the dice did.
-        </p>
-      </section>
-
-      <section>
-        <h2>Watch it learn</h2>
-        <p>
-          Sixty examples, plotted. Grey is the guess the machine just made; green is the best
-          setting it has found so far. Press the buttons and watch green creep toward the cloud.
-        </p>
-        <figure class="demo">
-          <div class="canvas-wrap"><canvas id="scatter"></canvas></div>
-          <div class="legend">
-            <span><i class="swatch dot"></i> the examples</span>
-            <span><i class="swatch latest"></i> latest guess</span>
-            <span><i class="swatch best"></i> best so far</span>
+    <!-- Injected where main.ts says `//! demo: search`. -->
+    <template data-demo="search">
+      <figure class="demo">
+        <div class="canvas-wrap"><canvas id="scatter"></canvas></div>
+        <div class="legend">
+          <span><i class="swatch dot"></i> the sixty pairs</span>
+          <span><i class="swatch latest"></i> latest guess</span>
+          <span><i class="swatch best"></i> best so far</span>
+        </div>
+        <div class="controls">
+          <button id="guessOnce" class="primary" type="button">Guess once</button>
+          <button id="guessHundred" type="button">Guess ×100</button>
+          <button id="autoGuess" type="button">Auto-guess</button>
+          <button id="resetSearch" type="button">Reset</button>
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Best mistake-score</dt>
+            <dd class="big" id="bestScore">—</dd>
           </div>
-          <div class="controls">
-            <button id="guessOnce" class="primary" type="button">Guess once</button>
-            <button id="guessHundred" type="button">Guess ×100</button>
-            <button id="autoGuess" type="button">Auto-guess</button>
-            <button id="resetSearch" type="button">Reset</button>
+          <div>
+            <dt>Guesses tried</dt>
+            <dd id="guessCount">0</dd>
           </div>
-          <dl class="readouts">
-            <div>
-              <dt>Best score</dt>
-              <dd class="big" id="bestScore">—</dd>
-            </div>
-            <div>
-              <dt>Guesses tried</dt>
-              <dd id="guessCount">0</dd>
-            </div>
-            <div>
-              <dt>Guesses since last improvement</dt>
-              <dd id="drySpell">0</dd>
-            </div>
-            <div>
-              <dt>Best rule so far</dt>
-              <dd id="bestRule">—</dd>
-            </div>
-          </dl>
-        </figure>
-      </section>
-
-      <section>
-        <h2>Watch it break</h2>
-        <p>
-          Leave auto-guess running and the third readout is the one to watch. For the first few
-          guesses the record keeps falling. Then it holds for ten guesses, then a hundred, then
-          thousands. The machine is not getting worse at guessing — it is doing exactly the same
-          thing at exactly the same speed. What changed is the size of the target. Once you're
-          close, only a tiny patch of settings is any better than where you already stand, and
-          rolling dice into a tiny patch takes a very long time.
-        </p>
-        <figure class="demo">
-          <div class="canvas-wrap short"><canvas id="staircase"></canvas></div>
-          <div class="controls">
-            <button id="runLong" class="primary" type="button">Run 20,000 guesses</button>
+          <div>
+            <dt>Guesses since last improvement</dt>
+            <dd id="drySpell">0</dd>
           </div>
-          <dl class="readouts">
-            <div>
-              <dt>Improvements found</dt>
-              <dd id="improvementCount">—</dd>
-            </div>
-            <div>
-              <dt>Last improvement at guess</dt>
-              <dd id="lastImprovement">—</dd>
-            </div>
-            <div>
-              <dt>Guesses wasted since</dt>
-              <dd id="wasted">—</dd>
-            </div>
-            <div>
-              <dt>Best score after 20,000</dt>
-              <dd class="big" id="longScore">—</dd>
-            </div>
-          </dl>
-          <p class="aside">Records landed at guess: <span id="recordList">—</span></p>
-        </figure>
-        <p>
-          Read that list of guess numbers again, because it is the whole problem in one line. The
-          gaps between improvements don't grow steadily. They multiply. A handful of records in the
-          first hundred guesses, one somewhere in the first thousand, one somewhere in the first ten
-          thousand — and then a run of thousands of guesses that buy nothing at all.
-        </p>
-        <p>
-          The staircase shows the same thing as a picture: a cliff, then flat. Not flat because
-          we've arrived — the line on the scatter plot is still visibly not the answer — but flat
-          because every further step down now costs about ten times what the last one cost. Random
-          guessing doesn't converge on a rule. It buys lottery tickets, and the tickets keep getting
-          more expensive.
-        </p>
-        <p>
-          And notice what we are throwing away. Every guess produces a score, and we look at that
-          score exactly once, to answer "record or not?", and then bin it. Two guesses that both
-          lost still told us something: one of them lost by less. We never use that.
-        </p>
-      </section>
+          <div>
+            <dt>Best setting so far</dt>
+            <dd id="bestKnobs">—</dd>
+          </div>
+        </dl>
+      </figure>
+    </template>
 
+    <!-- Injected where main.ts says `//! demo: staircase`. -->
+    <template data-demo="staircase">
+      <figure class="demo">
+        <div class="canvas-wrap short"><canvas id="staircase"></canvas></div>
+        <div class="controls">
+          <button id="runLong" class="primary" type="button">Run 20,000 guesses</button>
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Improvements found</dt>
+            <dd id="improvementCount">—</dd>
+          </div>
+          <div>
+            <dt>Last improvement at guess</dt>
+            <dd id="lastImprovement">—</dd>
+          </div>
+          <div>
+            <dt>Guesses wasted since</dt>
+            <dd id="wasted">—</dd>
+          </div>
+          <div>
+            <dt>Best score after 20,000</dt>
+            <dd class="big" id="longScore">—</dd>
+          </div>
+        </dl>
+        <p class="aside">The record fell at guess: <span id="recordList">—</span></p>
+      </figure>
+    </template>
+
+    <!-- Injected where main.ts says `//! demo: jargon`, so it lands after the lesson. -->
+    <template data-demo="jargon">
       <details class="jargon">
         <summary>What engineers call this</summary>
         <dl>
@@ -168,21 +90,20 @@
           <dd>The knobs — the numbers the machine is allowed to change while it learns.</dd>
           <dt>loss</dt>
           <dd>
-            The score. Confusingly, a <em>high</em> loss is bad; the goal is always to make it
-            small.
+            The mistake-score. A <em>high</em> loss is bad; the goal is always to make it small.
           </dd>
           <dt>mean squared error (MSE)</dt>
-          <dd>Our exact recipe for the score: square every mistake, then take the average.</dd>
+          <dd>Our exact recipe for it: square every gap, then take the average.</dd>
           <dt>random search</dt>
-          <dd>The strategy on this page — sample settings at random and keep the best one seen.</dd>
+          <dd>The method on this page — roll settings at random, keep the best one seen.</dd>
           <dt>seeded pseudo-random generator</dt>
           <dd>
-            Our five-line dice roller. Same seed, same numbers, so an experiment can be re-run
-            exactly — what people mean by a reproducible result.
+            Our five-line dice. Same seed, same numbers, so a run can be repeated exactly — what
+            people mean when they call a result reproducible.
           </dd>
         </dl>
       </details>
-    </main>
+    </template>
 
     <footer class="onward">
       <p class="label">Next problem</p>
