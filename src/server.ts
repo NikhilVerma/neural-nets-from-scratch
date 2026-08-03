@@ -1,32 +1,38 @@
 /**
- * Fullstack Bun server for "Learning AI From First Principles"
+ * The server for "Learning AI From First Principles".
  *
- * This server:
- * - Routes HTML files and automatically bundles their scripts and styles
- * - Handles API endpoints for training and data
- * - Serves static assets
- * - Supports development mode with hot reloading
+ * Routes are derived from the manifest, never hand-listed: "/" is the tree, and every
+ * manifest node whose lesson folder exists on disk gets "/<node.id>". Adding a node is
+ * a folder plus a manifest entry — this file is not edited.
  */
 
-import { serve } from "bun";
-import stage1_1 from "./stages/1.1/index.html";
+import type { HTMLBundle } from "bun";
+import { NODES } from "./curriculum.ts";
+import landing from "./site/index.html";
 
-const server = serve({
-	routes: {
-		// HTML imports are automatically bundled
-		"/": stage1_1,
-		"/1.1": stage1_1
-	},
+const routes: Record<string, HTMLBundle> = { "/": landing };
+const missing: string[] = [];
 
-	// Development mode enables:
-	// - Hot module reloading (HMR)
-	// - Detailed error messages
-	// - Console log forwarding from browser to terminal
+for (const node of NODES) {
+	// Most nodes are designed but not built yet; a missing folder is the normal case.
+	if (!(await Bun.file(`${import.meta.dir}/tree/${node.id}/index.html`).exists())) {
+		missing.push(node.id);
+		continue;
+	}
+	const lesson = await import(`./tree/${node.id}/index.html`);
+	routes[`/${node.id}`] = lesson.default;
+}
+
+const server = Bun.serve({
+	routes,
+
+	// Development mode enables hot module reloading, detailed errors, and browser
+	// console forwarding to this terminal.
 	development: {
 		hmr: true,
 		console: true
 	}
 });
 
-console.log(`🚀 Server running at ${server.url}`);
-console.log(`📚 Open ${server.url} in your browser`);
+console.log(`Serving the tree at ${server.url}`);
+console.log(`${NODES.length - missing.length} of ${NODES.length} lessons built.`);

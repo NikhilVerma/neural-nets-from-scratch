@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learning AI From First Principles</title>
+    <meta
+      name="description"
+      content="A curriculum tree for building neural networks from scratch: every edge is a problem in plain English, every node is the simplest solution that answers it."
+    />
+    <link rel="stylesheet" href="./site.css" />
+    <script type="module" src="./client.ts"></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <h1>Learning AI From First Principles</h1>
+      <p class="thesis">
+        Every edge is a problem, asked in plain English. Every node is the simplest solution that
+        answers it.
+      </p>
+
+      <div class="masthead-tools">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-live="polite">
+          Theme: system
+        </button>
+      </div>
+
+      <div class="legend">
+        <div class="legend-group">
+          <span class="legend-item"><i class="swatch trunk"></i> trunk</span>
+          <span class="legend-item"><i class="swatch language"></i> language</span>
+          <span class="legend-item"><i class="swatch vision"></i> vision</span>
+        </div>
+        <div class="legend-group br-trunk">
+          <span class="legend-item st-built">
+            <svg width="14" height="14" aria-hidden="true">
+              <circle class="marker" cx="7" cy="7" r="5" />
+            </svg>
+            built
+          </span>
+          <span class="legend-item st-next">
+            <svg width="14" height="14" aria-hidden="true">
+              <circle class="halo" cx="7" cy="7" r="6.5" />
+              <circle class="marker" cx="7" cy="7" r="4.5" />
+            </svg>
+            next
+          </span>
+          <span class="legend-item st-planned">
+            <svg width="14" height="14" aria-hidden="true">
+              <circle class="marker" cx="7" cy="7" r="5" />
+            </svg>
+            planned
+          </span>
+          <span class="legend-item st-future">
+            <svg width="14" height="14" aria-hidden="true">
+              <circle class="marker" cx="7" cy="7" r="5" />
+            </svg>
+            future
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main class="tree-scroll">
+      <svg id="tree" role="img" aria-label="The curriculum tree. Select a node to read about it.">
+        <g id="tree-edges"></g>
+        <g id="tree-questions"></g>
+        <g id="tree-nodes"></g>
+      </svg>
+    </main>
+
+    <aside class="detail" id="detail" hidden aria-labelledby="detail-title">
+      <button class="detail-close" id="detail-close" type="button" aria-label="Close">×</button>
+      <p class="detail-id" id="detail-id"></p>
+      <h2 id="detail-title"></h2>
+      <span class="status-chip" id="detail-status"></span>
+
+      <section class="detail-section">
+        <h3>The problem that brings you here</h3>
+        <p class="detail-problem" id="detail-problem"></p>
+      </section>
+
+      <section class="detail-section">
+        <h3>The solution</h3>
+        <p class="detail-solution" id="detail-solution"></p>
+      </section>
+
+      <section class="detail-section" id="detail-jargon-section">
+        <h3>What engineers call it</h3>
+        <ul class="jargon" id="detail-jargon"></ul>
+      </section>
+
+      <a class="lesson-link" id="detail-link" href="#">Open lesson →</a>
+      <p class="not-built" id="detail-unbuilt">Not built yet — the tree grows in the open.</p>
+    </aside>
+  </body>
+</html>

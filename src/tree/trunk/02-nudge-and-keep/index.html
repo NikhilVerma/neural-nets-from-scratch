@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nudge and keep — trunk/02</title>
+    <link rel="stylesheet" href="../../../site/lesson.css" />
+  </head>
+  <body>
+    <header class="lesson-head">
+      <a class="crumb" href="/">↞ the tree</a>
+      <p class="node-id">trunk/02-nudge-and-keep</p>
+      <h1>Nudge and keep</h1>
+    </header>
+
+    <main>
+      <section>
+        <h2>The problem that brought us here</h2>
+        <blockquote class="problem">
+          Random guessing never settles — can we guess smarter instead of more?
+        </blockquote>
+        <p class="lede">
+          Guessing at random got us into the right neighbourhood in about a hundred tries and then
+          spent twenty thousand more shuffling around in it. The reason is that every guess starts
+          from nothing. The machine finds a good setting, learns nothing from it, and throws the
+          next pair of dice from exactly the same place it threw the first.
+        </p>
+        <p>
+          So here is the smaller, better question. Forget finding the answer in one lucky roll.
+          We're standing at some setting already. Which way is <em>downhill from here</em>?
+        </p>
+      </section>
+
+      <section>
+        <h2>The simplest thing that could work</h2>
+        <p>
+          Ask. Take the multiplier knob and turn it up a little — score that. Turn it down a little
+          instead — score that. Now we have three numbers: where we are, a little up, a little down.
+          Keep whichever of the three is lowest. Then do the same for the add-on knob. That's one
+          step, and every step either improves the score or leaves it alone. It can never get worse,
+          because we only move when moving helps.
+        </p>
+        <p>
+          One thing is missing: how far is "a little"? Start with a nudge of 1. When a step comes
+          back with neither knob having a better direction, that doesn't mean we've arrived — it
+          means we've arrived as far as a nudge this big can tell. So halve the nudge and look again
+          at finer resolution. Big strides while we're far away, tiny ones as we close in, with
+          nothing deciding the schedule but the machine's own failure to improve.
+        </p>
+        <p>
+          It works. It genuinely settles on an answer and stays there, which is more than the last
+          lesson could say. But notice what we paid, because it is the whole story of the next
+          lesson: to move one knob one step, we had to run the machine over
+          <strong>every example, twice</strong> — once for up, once for down. Two test-runs per
+          knob, every single step, and none of that work is the actual learning. It's just asking
+          for directions.
+        </p>
+      </section>
+
+      <section>
+        <h2>Watch it learn</h2>
+        <p>
+          Same sixty examples. The green line is the machine's current setting — step it and watch
+          it walk in, first in strides, then in twitches.
+        </p>
+        <figure class="demo">
+          <div class="canvas-row two-up">
+            <div class="canvas-wrap"><canvas id="scatter"></canvas></div>
+            <div class="canvas-wrap"><canvas id="scoreChart"></canvas></div>
+          </div>
+          <div class="legend">
+            <span><i class="swatch dot"></i> the examples</span>
+            <span><i class="swatch best"></i> the machine right now</span>
+            <span>right: score after each step</span>
+          </div>
+          <div class="controls">
+            <button id="oneStep" class="primary" type="button">One step</button>
+            <button id="autoStep" type="button">Auto</button>
+            <button id="resetClimb" type="button">Reset</button>
+          </div>
+          <dl class="readouts">
+            <div>
+              <dt>Score</dt>
+              <dd class="big" id="score">—</dd>
+            </div>
+            <div>
+              <dt>Steps</dt>
+              <dd id="steps">0</dd>
+            </div>
+            <div>
+              <dt>Total test-runs</dt>
+              <dd id="testRuns">0</dd>
+            </div>
+            <div>
+              <dt>Nudge size</dt>
+              <dd id="nudgeSize">—</dd>
+            </div>
+            <div>
+              <dt>Rule right now</dt>
+              <dd id="rule">—</dd>
+            </div>
+          </dl>
+        </figure>
+      </section>
+
+      <section>
+        <h2>Watch it break</h2>
+        <p>
+          Nothing breaks on this page — that's the trouble. It converges, it's stable, and with two
+          knobs it costs four test-runs a step, which is nothing. The failure only shows up when you
+          ask what happens to a machine that isn't a toy. Ours has two knobs. Drag the slider and
+          price the same training run on a machine with more.
+        </p>
+        <figure class="demo">
+          <div class="slider-row">
+            <label for="knobCount">How many knobs would a real machine have?</label>
+            <input id="knobCount" type="range" min="2" max="10000" step="1" value="2" />
+          </div>
+          <dl class="readouts">
+            <div>
+              <dt>Knobs</dt>
+              <dd id="knobsValue">2</dd>
+            </div>
+            <div>
+              <dt>Test-runs per step</dt>
+              <dd id="perStep">4</dd>
+            </div>
+            <div>
+              <dt>Test-runs for 1,000 steps</dt>
+              <dd class="big" id="perTraining">4,000</dd>
+            </div>
+          </dl>
+        </figure>
+        <p>
+          Ten thousand knobs is still a small machine by any modern standard, and it already wants
+          twenty million full sweeps through the data to train for a thousand steps. Every one of
+          those sweeps exists to answer a single yes-or-no question about a single knob: up, or
+          down? We are running the entire machine, over the entire dataset, to extract one bit.
+        </p>
+        <p>
+          Which starts to feel absurd once you say it out loud. The score isn't a locked box we can
+          only probe by trying things. It's a formula we wrote ourselves. Surely the formula knows
+          which way is down.
+        </p>
+      </section>
+
+      <details class="jargon">
+        <summary>What engineers call this</summary>
+        <dl>
+          <dt>hill climbing</dt>
+          <dd>
+            The strategy on this page: from where you stand, look only at your immediate neighbours
+            and move to the best one. (Downhill here, since low scores win.)
+          </dd>
+          <dt>coordinate descent</dt>
+          <dd>The detail that we move one knob at a time rather than all of them together.</dd>
+          <dt>finite differences</dt>
+          <dd>
+            Working out which way a formula is heading by evaluating it at two nearby points and
+            comparing — exactly our up-nudge and down-nudge.
+          </dd>
+          <dt>step size / step decay</dt>
+          <dd>Our nudge size, and the habit of halving it when progress stops.</dd>
+          <dt>function evaluations</dt>
+          <dd>Our test-runs. In real optimisation work this is the number people count.</dd>
+        </dl>
+      </details>
+    </main>
+
+    <footer class="onward">
+      <p class="label">Next problem</p>
+      <p class="question">
+        Two test-runs per knob, every step. Fine for 2 knobs — deadly for thousands. Can we know
+        which way to nudge without trying?
+      </p>
+      <p><a href="/trunk/03-follow-the-slope">Follow the slope →</a></p>
+    </footer>
+
+    <script type="module" src="./client.ts"></script>
+  </body>
+</html>

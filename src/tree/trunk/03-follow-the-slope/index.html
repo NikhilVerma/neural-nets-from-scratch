@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Follow the slope — trunk/03</title>
+    <link rel="stylesheet" href="../../../site/lesson.css" />
+  </head>
+  <body>
+    <header class="lesson-head">
+      <a class="crumb" href="/">↞ the tree</a>
+      <p class="node-id">trunk/03-follow-the-slope</p>
+      <h1>Follow the slope</h1>
+    </header>
+
+    <main>
+      <section>
+        <h2>The problem that brought us here</h2>
+        <blockquote class="problem">
+          Two test-runs per knob, every step. Fine for 2 knobs — deadly for thousands. Can we know
+          which way to nudge without trying?
+        </blockquote>
+        <p class="lede">
+          Last lesson we found which way was downhill by walking a little way in each direction and
+          looking. It works, and it is the kind of thing you do when the thing you're measuring is a
+          mystery — a black box you can only poke.
+        </p>
+        <p>
+          But the score isn't a mystery. We wrote it. Every step of it is written down: take the
+          input, multiply by the multiplier knob, add the add-on knob, subtract what the answer
+          should have been, square it, average. There is no hidden machinery in there. So why are we
+          probing it like a stranger?
+        </p>
+      </section>
+
+      <section>
+        <h2>The simplest thing that could work</h2>
+        <p>
+          Here's the question worth asking, and it's a question about the formula rather than about
+          the machine:
+          <em>if I turned the multiplier knob by a hair, how much would the score move?</em> Not
+          "would it go up or down" — how much, and which way, per unit of turn. Call that number the
+          <strong>slope</strong> of the score along that knob.
+        </p>
+        <p>
+          If you know the slope you know everything the two test-runs would have told you and more.
+          A negative slope means turning that knob up brings the score down. A big slope means this
+          knob matters a lot right now; a slope near zero means this knob has stopped mattering and
+          you should leave it alone. The up-and-down probing was only ever a clumsy way of measuring
+          the slope by hand.
+        </p>
+        <p>
+          And you can get it from the formula directly. Follow one example through: the machine's
+          answer is the multiplier times the input, plus the add-on. Turn the multiplier up by a
+          hair and the answer moves by the input — a hair times the input, to be exact. Turn the
+          add-on up by a hair and the answer moves by exactly that hair. The score is the mistake
+          squared, and squaring means the score moves by twice the mistake for every unit the answer
+          moves. Put those together and you have both slopes, for one example, in one line of
+          arithmetic each. Average them over all sixty examples and you have the slope of the whole
+          score.
+        </p>
+        <p>
+          Then the update is almost too small to notice:
+          <strong>move each knob a little bit against its slope</strong>. Uphill is where the slope
+          points, so we go the other way. How far is "a little bit" is one number we pick, the same
+          for every knob — too big and the machine leaps over the bottom of the valley and bounces
+          out; too small and it inches.
+        </p>
+        <p>
+          Count what this costs. One walk through the examples gets us the slope for
+          <em>every</em> knob at once, because each example contributes its bit to both slopes as it
+          goes past. Not two runs per knob. One run, total, no matter how many knobs. The machine
+          never has to try anything to find out which way to go.
+        </p>
+      </section>
+
+      <section>
+        <h2>Watch it learn</h2>
+        <p>
+          Left: the examples and the machine's current line. Right: the score after each pass
+          through the data. The readouts show both knobs and the slope currently pulling on each one
+          — watch the slopes shrink toward zero as the line settles. That's the machine arriving,
+          not stopping.
+        </p>
+        <figure class="demo">
+          <div class="canvas-row two-up">
+            <div class="canvas-wrap"><canvas id="scatter"></canvas></div>
+            <div class="canvas-wrap"><canvas id="scoreChart"></canvas></div>
+          </div>
+          <div class="legend">
+            <span><i class="swatch dot"></i> the examples</span>
+            <span><i class="swatch best"></i> the machine right now</span>
+            <span>right: score after each pass</span>
+          </div>
+          <div class="controls">
+            <button id="onePass" class="primary" type="button">One pass</button>
+            <button id="autoTrain" type="button">Auto-train</button>
+            <button id="resetMachine" type="button">Reset</button>
+            <button id="toggleData" type="button">Data: Line ↔ Curve</button>
+          </div>
+          <dl class="readouts">
+            <div>
+              <dt>Score</dt>
+              <dd class="big" id="score">—</dd>
+            </div>
+            <div>
+              <dt>Passes</dt>
+              <dd id="passes">0</dd>
+            </div>
+            <div>
+              <dt>Multiplier knob</dt>
+              <dd id="weight">—</dd>
+            </div>
+            <div>
+              <dt>Add-on knob</dt>
+              <dd id="bias">—</dd>
+            </div>
+            <div>
+              <dt>Slope on multiplier</dt>
+              <dd id="weightSlope">—</dd>
+            </div>
+            <div>
+              <dt>Slope on add-on</dt>
+              <dd id="biasSlope">—</dd>
+            </div>
+          </dl>
+        </figure>
+        <p class="aside">
+          On the straight-line data this reaches the same answer as last lesson's nudging for
+          roughly half the work — and that ratio is the <em>best case</em>, because two knobs is
+          where nudging is cheapest. At a thousand knobs, nudging costs two thousand runs a step and
+          this still costs one.
+        </p>
+      </section>
+
+      <section>
+        <h2>Watch it break</h2>
+        <p>
+          Press <strong>Data: Line ↔ Curve</strong> above. The examples now come from a rule that
+          bends — a gentle U. Train it as long as you like.
+        </p>
+        <p>
+          The score falls, flattens out, and stops, a long way above zero. Nothing is broken: the
+          slopes really do reach zero, the machine really is at the bottom of its valley, and if you
+          press for another ten thousand passes not one digit will change. It has found the best
+          straight line through curved data, exactly as asked. The best straight line through curved
+          data is simply terrible.
+        </p>
+        <p>
+          This is a different kind of failure from the previous two, and it's worth being precise
+          about the difference. Lesson 1 was too slow. Lesson 2 was too expensive. Both of those are
+          complaints about the search — better search, better result. Here the search is flawless
+          and the answer is still wrong, because the answer we want is not in the set of things this
+          machine can say. Multiply and add is a straight line. It can be steeper, it can slide up
+          and down, and that is the whole of its vocabulary. You cannot search your way to a shape
+          you cannot express.
+        </p>
+      </section>
+
+      <details class="jargon">
+        <summary>What engineers call this</summary>
+        <dl>
+          <dt>w and b</dt>
+          <dd>
+            The two knobs, in every codebase you'll ever read: <code>w</code> for weight (our
+            multiplier) and <code>b</code> for bias (our add-on). The code in this folder switches
+            to those names here.
+          </dd>
+          <dt>derivative</dt>
+          <dd>The slope — how much one number moves when another moves by a hair.</dd>
+          <dt>gradient</dt>
+          <dd>All the slopes at once, one per knob, collected into a list.</dd>
+          <dt>gradient descent</dt>
+          <dd>The whole method on this page: work out the slopes, step against them, repeat.</dd>
+          <dt>learning rate</dt>
+          <dd>
+            How far we step per unit of slope. The single most fiddled-with number in the field.
+          </dd>
+          <dt>epoch</dt>
+          <dd>One pass through the whole set of examples — one press of the button.</dd>
+          <dt>analytic vs numerical gradients</dt>
+          <dd>
+            Reading the slope off the formula (this lesson) versus measuring it by poking (last
+            lesson). Both give the same answer; only one is affordable.
+          </dd>
+          <dt>underfitting / model capacity</dt>
+          <dd>
+            What the curve demo shows: the machine is not wrong because it trained badly, it's wrong
+            because it cannot represent the answer.
+          </dd>
+        </dl>
+      </details>
+    </main>
+
+    <footer class="onward">
+      <p class="label">Next problem</p>
+      <p class="question">
+        Our machine is multiply-then-add — a straight line. Feed it curved data and it fails
+        forever. Not slow: incapable.
+      </p>
+      <p class="soon">Bend the line — coming soon.</p>
+    </footer>
+
+    <script type="module" src="./client.ts"></script>
+  </body>
+</html>
