@@ -302,7 +302,7 @@ export const NODES: CurriculumNode[] = [
 		problem: "It completes text. It doesn't answer you. Why did ChatGPT feel different?",
 		solution:
 			"Same machine, new diet: conversations. Start from trained weights instead of from scratch — works for any task, not just chat.",
-		jargon: ["fine-tuning", "transfer learning", "SFT", "instruction tuning", "RLHF"],
+		jargon: ["fine-tuning", "transfer learning", "SFT", "instruction tuning"],
 		status: "future"
 	},
 	{
@@ -343,6 +343,45 @@ export const NODES: CurriculumNode[] = [
 		jargon: ["sliding-window attention", "sparse attention", "MQA/GQA"],
 		status: "future",
 		side: true
+	},
+
+	{
+		id: "language/15-teacher-and-student",
+		branch: "language",
+		title: "Teacher and student",
+		parent: "language/09-a-tiny-gpt",
+		problem:
+			"The engine we can afford to run is too small to learn well from raw text on its own. We already have a big engine that learned. Can the small one learn from the big one's answers instead?",
+		solution:
+			"Train the student on the teacher's full probability answers — soft answers carry far more than right or wrong. Modern engines eat a growing share of teacher-made runs.",
+		jargon: ["distillation", "teacher-student", "soft labels", "synthetic data"],
+		status: "future",
+		side: true
+	},
+	{
+		id: "language/16-what-we-feed-it",
+		branch: "language",
+		title: "What we feed it",
+		parent: "language/09-a-tiny-gpt",
+		problem:
+			"The engine learns whatever the text teaches it. The internet repeats itself, contradicts itself, and says things we don't want repeated. What do we actually feed it?",
+		solution:
+			"Corpus building: clean it, de-duplicate it, mix the sources on purpose — and lately, let a teacher engine write part of the diet.",
+		jargon: ["training corpus", "data curation", "deduplication", "data mixture"],
+		status: "future",
+		side: true
+	},
+	{
+		id: "language/17-pointing-at-the-better-answer",
+		branch: "language",
+		title: "Pointing at the better answer",
+		parent: "language/11-teaching-it-to-talk",
+		problem:
+			"It follows instructions now, but when it does not know, it guesses with full confidence. People cannot write the perfect answer — but they can point at the better of two. Can pointing train it?",
+		solution:
+			"Collect pairs of answers, let people pick the better one, and train the engine toward the picked side.",
+		jargon: ["preference data", "reward model", "RLHF", "DPO"],
+		status: "future"
 	},
 
 	// ───────────────────────── vision — from pixels to pictures
@@ -428,6 +467,18 @@ export const NODES: CurriculumNode[] = [
 		solution:
 			"Learn one easy skill — remove a little noise — then start from pure static and apply it hundreds of times.",
 		jargon: ["diffusion", "denoising"],
+		status: "future"
+	},
+	{
+		id: "vision/08-steering-the-noise",
+		branch: "vision",
+		title: "Steering the noise",
+		parent: "vision/07-sculpting-from-noise",
+		problem:
+			"Our sculptor carves a face from static, but never the face we asked for. How do words steer the carving?",
+		solution:
+			"Fold a description of the goal into every denoising step, so each little cleanup leans toward the words.",
+		jargon: ["conditioning", "text-to-image", "guidance"],
 		status: "future"
 	}
 ];

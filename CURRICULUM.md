@@ -209,8 +209,17 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
       │        Same machine, new diet: conversations. Start from trained
       │        weights instead of from scratch — works for any task, not
       │        just chat. (jargon: fine-tuning, transfer learning, SFT,
-      │        instruction tuning; RLHF as a further leaf — this node is
-      │        the nanochat idea)
+      │        instruction tuning — this node is the nanochat idea)
+      │           │
+      │           │  "It follows instructions now, but when it does not
+      │           │   know, it guesses with full confidence. People cannot
+      │           │   write the perfect answer — but they can point at the
+      │           │   better of two. Can pointing train it?"
+      │           ▼
+      │        [language/17] POINTING AT THE BETTER ANSWER            (future)
+      │           Collect pairs of answers, let people pick the better
+      │           one, and train the engine toward the picked side.
+      │           (jargon: preference data, reward model, RLHF, DPO)
       │
       ├──"Generating token 1,000 recomputes everything about the previous
       │   999 — again. Generation crawls."
@@ -227,13 +236,33 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
       │     Round the learned numbers to coarser grids and see what survives.
       │     Surprisingly much. (jargon: quantization, int8/int4)
       │
-      └──"Every new word glances at EVERY old word. Double the text,
-          quadruple the work. Long documents choke."
+      ├──"Every new word glances at EVERY old word. Double the text,
+      │   quadruple the work. Long documents choke."
+      │  ▼
+      │  [language/14] CHEAPER GLANCES                                 (future)
+      │     Only glance nearby; skip most positions; share the contains-
+      │     notes between heads. Where the tree touches current research.
+      │     (jargon: sliding-window attention, sparse attention, MQA/GQA)
+      │
+      ├──"The engine we can afford to run is too small to learn well from
+      │   raw text on its own. We already have a big engine that learned.
+      │   Can the small one learn from the big one's answers instead?"
+      │  ▼
+      │  [language/15] TEACHER AND STUDENT                             (future)
+      │     Train the student on the teacher's full probability answers —
+      │     soft answers carry far more than right or wrong. Modern
+      │     engines eat a growing share of teacher-made runs. (jargon:
+      │     distillation, teacher-student, soft labels, synthetic data)
+      │
+      └──"The engine learns whatever the text teaches it. The internet
+          repeats itself, contradicts itself, and says things we don't
+          want repeated. What do we actually feed it?"
          ▼
-         [language/14] CHEAPER GLANCES                                 (future)
-            Only glance nearby; skip most positions; share the contains-
-            notes between heads. Where the tree touches current research.
-            (jargon: sliding-window attention, sparse attention, MQA/GQA)
+         [language/16] WHAT WE FEED IT                                 (future)
+            Corpus building: clean it, de-duplicate it, mix the sources
+            on purpose — and lately, let a teacher engine write part of
+            the diet. (jargon: training corpus, data curation,
+            deduplication, data mixture)
 ```
 
 ---
@@ -296,6 +325,14 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
             Learn one easy skill — remove a LITTLE noise — then start from
             pure static and apply it hundreds of times. (jargon: diffusion,
             denoising)
+            │
+            │  "Our sculptor carves a face from static, but never the face
+            │   we asked for. How do words steer the carving?"
+            ▼
+         [vision/08] STEERING THE NOISE                                (future)
+            Fold a description of the goal into every denoising step, so
+            each little cleanup leans toward the words. (jargon:
+            conditioning, text-to-image, guidance)
 ```
 
 ---
@@ -334,3 +371,7 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
 | GAN                                   | vision/05      |
 | PatchGAN                              | vision/06      |
 | Diffusion                             | vision/07      |
+| Distillation, teacher-student runs    | language/15    |
+| The training corpus, data curation    | language/16    |
+| RLHF, DPO, preference data            | language/17    |
+| Text-to-image conditioning            | vision/08      |
