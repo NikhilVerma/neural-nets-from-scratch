@@ -15,6 +15,8 @@
 // whole file's code. Scrolling or hovering a section lights up that section's code and
 // fades the rest. Below 1000px the same chunks render as one column in file order.
 
+import { mountReview } from "./review.ts";
+
 export type ShowCue = string[] | "none";
 
 type Chunk =
@@ -582,4 +584,8 @@ export async function renderLesson(target: HTMLElement): Promise<void> {
 	// Crossing the breakpoint re-lays the page out. The demo nodes move rather than
 	// being rebuilt, so the controls the lesson's client.ts wired up keep working.
 	wide.addEventListener("change", draw);
+
+	// In development, the review overlay lets the maintainer select a passage and
+	// leave a note (site/review.ts). In production its probe fails and nothing mounts.
+	void mountReview();
 }
