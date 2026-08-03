@@ -8,10 +8,12 @@
     "start": "bun src/server.ts",
     "test": "bun test",
     "prettify": "prettier --config .prettierrc.cjs --cache --cache-location .cache/prettier --write .",
-    "slop": "bun scripts/slop.ts"
+    "slop": "bun scripts/slop.ts",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "husky": "^9.1.7"
   },
   "peerDependencies": {
     "typescript": "^5"
