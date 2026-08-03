@@ -7,7 +7,7 @@ import {
 	EXAMPLE_COUNT,
 	makeExamples,
 	makeRandom,
-	runMachine,
+	runEngine,
 	SEED,
 	startSearch,
 	tryManyGuesses,
@@ -56,8 +56,8 @@ function drawScatter(): void {
 	if (search.guessesTried > 0) {
 		const latest = search.latest;
 		const best = search.best;
-		scatterPlot.functionLine(x => runMachine(latest, x), scatterPlot.color("--plot-latest"), 2);
-		scatterPlot.functionLine(x => runMachine(best, x), scatterPlot.color("--plot-best"), 2.5);
+		scatterPlot.functionLine(x => runEngine(latest, x), scatterPlot.color("--plot-latest"), 2);
+		scatterPlot.functionLine(x => runEngine(best, x), scatterPlot.color("--plot-best"), 2.5);
 	}
 }
 

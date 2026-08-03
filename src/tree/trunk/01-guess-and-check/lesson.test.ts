@@ -3,7 +3,7 @@ import {
 	makeExamples,
 	makeRandom,
 	mistakeScore,
-	SECRET_RULE,
+	SECRET_FORMULA,
 	startSearch,
 	tryManyGuesses,
 	tryOneGuess
@@ -17,7 +17,7 @@ const CLEAN_PAIRS = [
 ];
 
 test("a perfect setting scores zero, anything else scores more", () => {
-	expect(mistakeScore(SECRET_RULE, CLEAN_PAIRS)).toBe(0);
+	expect(mistakeScore(SECRET_FORMULA, CLEAN_PAIRS)).toBe(0);
 	expect(mistakeScore({ multiplier: 2, addOn: 3.5 }, CLEAN_PAIRS)).toBeGreaterThan(0);
 	expect(mistakeScore({ multiplier: 2, addOn: 2.5 }, CLEAN_PAIRS)).toBeGreaterThan(0);
 });
@@ -33,7 +33,7 @@ test("misses do not cancel out: too high on one pair, too low on the next still 
 		{ x: -1, y: 0 }, // the rule says 1, so this pair pulls the machine down
 		{ x: 1, y: 6 } //  the rule says 5, so this one pulls it back up
 	];
-	expect(mistakeScore(SECRET_RULE, tilted)).toBeGreaterThan(0);
+	expect(mistakeScore(SECRET_FORMULA, tilted)).toBeGreaterThan(0);
 });
 
 test("the best score never gets worse as guesses pile up", () => {
@@ -68,8 +68,8 @@ test("2,000 guesses get roughly right — and no closer", () => {
 		const search = startSearch();
 		tryManyGuesses(search, examples, random, 2000);
 
-		const multiplierMiss = Math.abs(search.best.multiplier - SECRET_RULE.multiplier);
-		const addOnMiss = Math.abs(search.best.addOn - SECRET_RULE.addOn);
+		const multiplierMiss = Math.abs(search.best.multiplier - SECRET_FORMULA.multiplier);
+		const addOnMiss = Math.abs(search.best.addOn - SECRET_FORMULA.addOn);
 
 		// Roughly right: it does find the neighbourhood.
 		expect(multiplierMiss).toBeLessThan(0.7);
@@ -113,7 +113,7 @@ test("the run the lesson quotes: 20,000 guesses from seed 7", () => {
 	expect(search.best.multiplier.toFixed(3)).toBe("2.075");
 	expect(search.best.addOn.toFixed(3)).toBe("3.204");
 	// The wobble sets the scale: even the secret rule does not score zero.
-	expect(mistakeScore(SECRET_RULE, examples).toFixed(3)).toBe("0.429");
+	expect(mistakeScore(SECRET_FORMULA, examples).toFixed(3)).toBe("0.429");
 	// And the best setting slips under the rule's own score by chasing that wobble.
-	expect(search.bestScore).toBeLessThan(mistakeScore(SECRET_RULE, examples));
+	expect(search.bestScore).toBeLessThan(mistakeScore(SECRET_FORMULA, examples));
 });

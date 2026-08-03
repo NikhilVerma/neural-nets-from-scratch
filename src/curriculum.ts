@@ -38,9 +38,9 @@ export const NODES: CurriculumNode[] = [
 		title: "Guess and check",
 		parent: null,
 		problem:
-			"Nobody can write down the steps that tell spam from real mail, or a 7 from a 1. But examples exist by the million. Can a machine work the steps out from examples alone?",
+			"There is a hidden formula: a number goes in, another comes out. All we have are examples of its inputs and outputs. Can we build an engine that figures the formula out for us?",
 		solution:
-			"A machine with two knobs guesses random settings and keeps the best. Forces us to invent a way to score a guess.",
+			"An engine with two knobs guesses random settings and keeps the best. Forces us to invent a way to score a guess.",
 		jargon: ["loss", "parameters"],
 		status: "built"
 	},

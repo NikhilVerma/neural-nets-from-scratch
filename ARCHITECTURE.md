@@ -15,8 +15,8 @@ If you find yourself writing a paragraph-long comment in a `.ts` file, it belong
 
 Every lesson page follows this arc, in this order:
 
-1. **A real problem.** Something a person actually wants and can't do — not an abstract puzzle. Then shrink it, out loud, to the smallest version that still has the problem's shape ("we can't start with faces, so we start with a rule that turns one number into another"). The shrinking is part of the lesson.
-2. **Build the solution in code, on the page.** The reader learns by reading the real code with prose between the pieces — this project's promise is *from concepts and from code*.
+1. **Say what we will do, then start the game.** Open with this lesson's goal in a sentence or two, then walk straight into the smallest concrete setup the reader can hold in their head (a hidden formula, a machine with two knobs). The problem the lesson opens with must be the problem the lesson works on — never borrow a grander problem (spam, faces) as an opener the lesson won't deliver on.
+2. **Build the solution in code, on the page.** The reader learns by reading the real code with prose between the pieces — this project's promise is _from concepts and from code_.
 3. **Watch it work** — the interactive demo.
 4. **Watch it break** — run into the next problem live, and state it plainly. It is the child edge, quoted from the manifest.
 5. The jargon box, then the handoff.
@@ -31,11 +31,14 @@ The page fetches `/source/<id>/main.ts` from the server and renders it (`site/co
 
 ## Voice rules
 
-- **Define before use.** No noun appears before the reader knows exactly what it is. If the lesson says "the machine", the lesson has already built the machine in front of them.
-- Active voice, "we" and "you", present tense. One human explaining to another at a whiteboard.
-- **No claim without its evidence next to it**: a number, a demo, or the code itself. If a sentence asserts something the reader can't immediately check below it, cut it or prove it.
-- Short sentences over clause chains. If a sentence works without a word, cut the word.
-- Never "simply", "just", "magic", "elegant". The reader decides what's simple.
+- **Take the reader on the journey**, one step at a time, in the order they would do the steps themselves: "Let's start with a simple game. Let's say there is a hidden formula…"
+- **Use the reader's existing words.** The reader knows what a formula is, so say "formula". Invent a term only when the lesson builds the thing the term names.
+- **Introduce one concrete thing and walk a straight line through it.** Do not stack abstractions. Do not pile up directions.
+- **Define before use.** No noun appears before the reader knows what it is. If the lesson says "the engine", the lesson has already built the engine in front of them.
+- Active voice, "we" and "you", present tense. Say the obvious consequence out loud so the reader can check that they followed.
+- Simple words chained plainly are good. The slop signature is filler technique: dramatic fragments, clauses merged with commas, sentences stretched with em dashes, drama without value.
+- **No claim without its evidence next to it**: a number, a demo, or the code itself. If a sentence has no evidence nearby, cut the sentence or prove it.
+- Ban "simply", "just", "magic", "elegant". The reader decides what's simple.
 - **Every piece of text must pass the slop linter.** `bun run slop` runs [SlopSift](https://slopsift.dev) over the whole repo — lesson prose, docs, code comments, UI copy. `scripts/slop.ts` disables one rule (`ai-style/mechanical-outline`, which trips on the curriculum's repeating problem→solution scaffolding). Fix every other finding in the text itself.
 
 ## Layout
@@ -73,14 +76,14 @@ The rule that balances it:
 > **What a node teaches lives in that node's folder, written out in full.
 > Once taught, a concept graduates into `src/learned/` and later nodes import it.**
 
-- `trunk/06` teaches matrices, so `matmul` is written *inside* `trunk/06`, spelled out, the star of the show.
+- `trunk/06` teaches matrices, so `matmul` is written _inside_ `trunk/06`, spelled out, the star of the show.
 - `trunk/07` needs matrices but is about autograd — it imports `learned/matrix.ts` and spells out the `Value` class instead.
 - Every file in `learned/` starts with a one-line header: `// Taught at trunk/06-the-grid-trick — go there for the why.` So chasing an import is never a mystery hunt; it's a pointer back down the tree.
 
 Corollaries:
 
 - **A node may only import concepts from its ancestors.** If you need something no ancestor taught, that's not an import problem — it's a missing node in the curriculum.
-- `learned/` code may be a *cleaned-up* version of what the node taught (better names, edge cases), but never a *different algorithm*. No secretly swapping in a faster trick the learner hasn't met.
+- `learned/` code may be a _cleaned-up_ version of what the node taught (better names, edge cases), but never a _different algorithm_. No secretly swapping in a faster trick the learner hasn't met.
 - Small deliberate re-derivations are fine when repetition is the point. Default is graduation.
 
 ## The manifest
@@ -97,7 +100,7 @@ Adding a node = add a folder + add one manifest entry. You touch nothing else.
 
 - **Zero ML/math dependencies, forever.** The only runtime is Bun; styling is plain CSS we write ourselves (`src/site/`). If a lesson needs it, we write it. (Prettier stays as a dev tool.)
 - **Lesson prose lives in the lesson's `index.html`.** No markdown pipeline, no renderer dependency — the page a learner reads is a file they can open and edit.
-- **Plain TypeScript, browser-runnable.** No WebGPU/WASM/kernel tricks, no worker-pool cleverness. When something is slow, slowness is *curriculum material* (it motivates matrices, batching, honest training). When plain TS genuinely can't go further (real-scale training), the lesson says so out loud and points at the tools that can — we don't smuggle in performance engineering.
+- **Plain TypeScript, browser-runnable.** No WebGPU/WASM/kernel tricks, no worker-pool cleverness. When something is slow, slowness is _curriculum material_ (it motivates matrices, batching, honest training). When plain TS genuinely can't go further (real-scale training), the lesson says so out loud and points at the tools that can — we don't smuggle in performance engineering.
 - **Clarity beats speed, every time.** Stolen from micrograd/nanoGPT: "everything else is just efficiency."
 - **No configuration surface.** Nodes have hardcoded, readable constants, not option objects. A learner changes behavior by editing the code — that's the point.
 
@@ -105,5 +108,5 @@ Adding a node = add a folder + add one manifest entry. You touch nothing else.
 
 - Tests use `bun test` (`import { test, expect } from "bun:test"`), discovered by glob — no hand-rolled runners, no per-node package scripts.
 - Every node works both ways: `bun run src/tree/<node>/main.ts` in a terminal (prints its story) and interactively in the browser.
-- A node's `lesson.test.ts` proves the node's *claims*, including the failure: if the lesson says "this cannot fit a curve," a test asserts the loss stays high. The next lessons stand on those failures, so test them like features.
+- A node's `lesson.test.ts` proves the node's _claims_, including the failure: if the lesson says "this cannot fit a curve," a test asserts the loss stays high. The next lessons stand on those failures, so test them like features.
 - Prettier config as-is; format with `bun run prettify`.
