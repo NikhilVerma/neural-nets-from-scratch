@@ -10,29 +10,34 @@ import type { CurriculumNode } from "../curriculum.ts";
 
 // ───────────────────────── layout constants
 
-const RAIL_STEP = 140; // vertical rhythm between nodes on a rail
-const FORK_STEP = 200; // longer first stride so a fork has room to breathe
-const FORK_SPREAD = 18; // degrees each branch tilts away from its parent rail
+const RAIL_STEP = 172; // vertical rhythm between nodes on a rail
+const FORK_STEP = 242; // longer first stride so a fork has room to breathe
+const FORK_SPREAD = 15; // degrees each branch tilts away from its parent rail
 const TWIG_BASE = 38; // first twig's angle off its parent rail
 const TWIG_FAN = 16; // extra angle per additional twig on the same parent
-const TWIG_LEN = 170;
-const TWIG_LEN_STEP = 40;
+const TWIG_LEN = 184;
+const TWIG_LEN_STEP = 42;
 const TWIG_MAX_ANGLE = 84; // keep twigs pointing downward, never back up the page
 
-const ROOT_WIDTH = 7.5;
+const ROOT_WIDTH = 8.6;
 const RAIL_TAPER = 0.985;
 const FORK_TAPER = 0.68;
 const TWIG_TAPER = 0.42;
-const TWIG_MIN_WIDTH = 2.2;
+const TWIG_MIN_WIDTH = 2.6;
 
-const LABEL_GAP = 11;
-const LABEL_HEIGHT = 17;
-const LABEL_FONT = '560 14px ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif';
-const QUESTION_GAP = 22;
-const QUESTION_FONT = 'italic 12.5px Charter, "Iowan Old Style", Georgia, serif';
-const QUESTION_LINE = 15;
-const QUESTION_MAX_WIDTH = 215; // roughly 34 characters at this size
-const PADDING = 48;
+// The two fonts below must stay identical to `.label` and `.question` in site.css: the
+// canvas gauge below is what keeps labels from landing on top of each other, and it can
+// only do that if it measures the font the browser will actually draw.
+const LABEL_GAP = 13;
+const LABEL_HEIGHT = 21;
+const LABEL_FONT =
+	'680 16px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+const QUESTION_GAP = 25;
+const QUESTION_FONT =
+	'italic 14.5px Charter, "Bitstream Charter", "Iowan Old Style", Georgia, "Times New Roman", serif';
+const QUESTION_LINE = 19.5;
+const QUESTION_MAX_WIDTH = 225; // roughly 30 characters at this size
+const PADDING = 26;
 
 type Side = -1 | 1;
 
@@ -92,7 +97,7 @@ function direction(angleDeg: number): { dx: number; dy: number } {
 	return { dx: Math.sin(radians), dy: Math.cos(radians) };
 }
 
-function overlaps(a: Box, b: Box, pad = 5): boolean {
+function overlaps(a: Box, b: Box, pad = 6): boolean {
 	return (
 		a.left - pad < b.right &&
 		a.right + pad > b.left &&
@@ -223,7 +228,7 @@ function make(seed: Omit<Placed, "radius" | "labelSide">): Placed {
 	// what keeps the trunk legible without a collision pass having to work hard.
 	const labelSide: Side =
 		Math.abs(seed.angle) > 5 ? (seed.angle > 0 ? 1 : -1) : seed.depth % 2 === 0 ? 1 : -1;
-	return { ...seed, radius: 4.4 + seed.width * 0.62, labelSide };
+	return { ...seed, radius: 5.2 + seed.width * 0.7, labelSide };
 }
 
 // ───────────────────────── placing labels and questions without collisions
@@ -267,7 +272,7 @@ function arrange(placedNodes: Placed[]): { labels: LabelBox[]; questions: Questi
 	const obstacles: Box[] = [];
 
 	for (const placed of placedNodes) {
-		const reach = placed.radius + 3;
+		const reach = placed.radius + 4;
 		obstacles.push({
 			left: placed.x - reach,
 			right: placed.x + reach,
@@ -278,7 +283,7 @@ function arrange(placedNodes: Placed[]): { labels: LabelBox[]; questions: Questi
 		// Sample the curve so nothing is written on top of a branch.
 		for (const t of [0.2, 0.35, 0.5, 0.65, 0.8]) {
 			const point = cubicPoint(placed, t);
-			const half = placed.width / 2 + 5;
+			const half = placed.width / 2 + 6;
 			obstacles.push({
 				left: point.x - half,
 				right: point.x + half,
@@ -317,7 +322,9 @@ function arrange(placedNodes: Placed[]): { labels: LabelBox[]; questions: Questi
 			Math.abs(placed.angle) > 5 ? placed.labelSide : (-placed.labelSide as Side);
 
 		let chosen: { side: Side; box: Box } | null = null;
-		for (const nudge of [0, 32]) {
+		// Bigger type means bigger blocks, so a question that misses at the midpoint gets a few
+		// slides along its own edge before it gives up and lives in the detail panel instead.
+		for (const nudge of [0, 40, -40, 76, -76]) {
 			for (const side of [outward, -outward as Side]) {
 				const box = questionBox(midX, midY + nudge, side, width, height);
 				if (!obstacles.some(other => overlaps(box, other))) {
@@ -407,11 +414,11 @@ function draw(): void {
 
 		if (placed.node.id === nextNode?.id) {
 			group.append(
-				svgEl("circle", { class: "halo", cx: placed.x, cy: placed.y, r: placed.radius + 7 })
+				svgEl("circle", { class: "halo", cx: placed.x, cy: placed.y, r: placed.radius + 9 })
 			);
 		}
 		group.append(
-			svgEl("circle", { class: "ring", cx: placed.x, cy: placed.y, r: placed.radius + 4.5 })
+			svgEl("circle", { class: "ring", cx: placed.x, cy: placed.y, r: placed.radius + 5.5 })
 		);
 		group.append(
 			svgEl("circle", { class: "marker", cx: placed.x, cy: placed.y, r: placed.radius })
@@ -441,7 +448,7 @@ function draw(): void {
 
 	const boxes = [...labels.map(l => l.box), ...questions.map(q => q.box)];
 	for (const placed of placedNodes) {
-		const reach = placed.radius + 9;
+		const reach = placed.radius + 11;
 		boxes.push({
 			left: placed.x - reach,
 			right: placed.x + reach,
@@ -454,6 +461,10 @@ function draw(): void {
 	const top = Math.min(...boxes.map(box => box.top)) - PADDING;
 	const bottom = Math.max(...boxes.map(box => box.bottom)) + PADDING;
 	svg.setAttribute("viewBox", `${left} ${top} ${right - left} ${bottom - top}`);
+	// Cap the drawn width at the tree's own width so the SVG is never scaled up past 1:1.
+	// Label and question text then appear at the pixel sizes they were measured at, which is
+	// what keeps them readable instead of shrinking to fit the window.
+	svg.style.maxWidth = `${Math.round(right - left)}px`;
 }
 
 // ───────────────────────── the detail panel

@@ -1,10 +1,14 @@
+//! show: none
 /*
 ## Where we are going
 
 In this series of lessons, we will teach you how neural networks work by taking you
 through step-by-step examples, starting from the basics and adding complexity as you
 go along.
+*/
 
+//! show: none
+/*
 ## A simple game
 
 Let's start with a simple game. Let's say there is a hidden formula. That formula takes
@@ -199,6 +203,7 @@ The search has to remember a few things between guesses:
 That last one turns out to be the whole lesson.
 */
 
+//! code: the-search
 export interface Search {
 	best: Knobs;
 	bestScore: number;
@@ -254,6 +259,7 @@ export function tryManyGuesses(
 	}
 }
 
+//! show: the-search
 /*
 ## Watch it guess
 
@@ -265,6 +271,7 @@ and watch the green line swing into the cloud of dots.
 
 //! demo: search
 
+//! show: the-search
 /*
 ## Watch it break
 

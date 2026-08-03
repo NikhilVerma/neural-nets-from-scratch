@@ -32,8 +32,8 @@
 		--line: #313731;
 		--accent: #6fae7d;
 		--accent-wash: #1e2a20;
-	--code-kw: #8b9ae0;
-	--code-num: #c97fb0;
+		--code-kw: #8b9ae0;
+		--code-num: #c97fb0;
 
 		--plot-axis: #3a423a;
 		--plot-label: #a7aea7;
@@ -484,4 +484,198 @@ pre[data-code] code {
 }
 .tok-kw {
 	color: var(--code-kw);
+}
+
+/* ── the two-panel lesson ────────────────────────────────────────────────────
+   Wide screens get three columns: a rail of the lesson's sections, the prose, and
+   one panel holding the whole of main.ts. Narrow screens get the single column
+   this file has always had, so the rules below only exist inside the media query.
+   site/code.ts picks the layout with the same breakpoint. */
+
+.lesson-section {
+	margin: 0 0 3.5rem;
+	scroll-margin-top: 1.5rem;
+}
+
+.lesson-section:last-child {
+	margin-bottom: 0;
+}
+
+@media (min-width: 1000px) {
+	:root {
+		--rail-w: 11.5rem;
+		--col-gap: 2.5rem;
+		--prose-w: 34rem;
+		--code-w: 44rem;
+		--layout-max: calc(11.5rem + 2.5rem + 34rem + 2.5rem + 44rem);
+	}
+
+	/* The head and the footer keep the page centred on the same box as the grid,
+	   so their text starts exactly where the prose column starts. */
+	.lesson-head,
+	.onward {
+		max-width: var(--layout-max);
+		padding-left: calc(var(--rail-w) + var(--col-gap));
+	}
+
+	main.lesson-panels {
+		display: grid;
+		/* The prose takes what it can up to its reading width; the code panel takes the
+		   rest, and at the widest the two land on exactly --prose-w and --code-w. */
+		grid-template-columns: var(--rail-w) minmax(20rem, var(--prose-w)) minmax(18rem, 1fr);
+		column-gap: var(--col-gap);
+		align-items: start;
+		max-width: var(--layout-max);
+		margin: 0 auto;
+	}
+
+	.prose-column {
+		min-width: 0;
+		padding-top: 3.5rem;
+	}
+
+	/* ── the section rail ── */
+
+	.rail {
+		position: sticky;
+		top: 1.5rem;
+		align-self: start;
+		max-height: calc(100vh - 3rem);
+		margin-top: 3.5rem;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	.rail-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.rail-list li {
+		margin: 0;
+	}
+
+	.rail-link {
+		display: grid;
+		grid-template-columns: 1.5rem 1fr;
+		gap: 0.5rem;
+		padding: 0.35rem 0.4rem 0.35rem 0.7rem;
+		border-left: 2px solid transparent;
+		color: var(--soft);
+		font-size: 0.82rem;
+		line-height: 1.35;
+		text-decoration: none;
+		transition:
+			color 0.2s ease,
+			border-color 0.2s ease;
+	}
+
+	.rail-num {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		font-variant-numeric: tabular-nums;
+		opacity: 0.65;
+	}
+
+	/* Long headings clamp to three lines; the link's title holds the whole thing. */
+	.rail-label {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		overflow: hidden;
+		overflow-wrap: anywhere;
+	}
+
+	.rail-link:hover {
+		color: var(--ink);
+	}
+
+	.rail-link.is-active {
+		border-left-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.rail-link.is-active .rail-num {
+		opacity: 1;
+	}
+
+	.rail-link:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+		border-radius: 3px;
+	}
+
+	/* ── the code panel ── */
+
+	.code-panel {
+		position: sticky;
+		top: 1.5rem;
+		align-self: start;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		max-width: var(--code-w);
+		max-height: calc(100vh - 3rem);
+		margin-top: 3.5rem;
+		background: var(--panel);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		overflow: hidden;
+	}
+
+	.code-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.5rem 0.55rem 0.5rem 0.9rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.code-file {
+		font-family: var(--mono);
+		font-size: 0.78rem;
+		letter-spacing: 0.02em;
+		color: var(--soft);
+	}
+
+	.code-copy {
+		padding: 0.2rem 0.6rem;
+		font-size: 0.76rem;
+	}
+
+	.code-scroll {
+		position: relative;
+		flex: 1 1 auto;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding: 0.6rem 0 45vh;
+	}
+
+	.code-panel pre.code {
+		margin: 0;
+		padding: 0.45rem 1rem;
+		background: transparent;
+		border: 0;
+		border-left: 2px solid transparent;
+		border-radius: 0;
+		font-size: 0.78rem;
+		opacity: 0.35;
+		transition:
+			opacity 0.3s ease,
+			border-color 0.3s ease;
+	}
+
+	.code-panel pre.code.is-active {
+		opacity: 1;
+		border-left-color: var(--accent);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rail-link,
+	.code-panel pre.code {
+		transition: none;
+	}
 }
