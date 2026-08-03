@@ -11,8 +11,8 @@ You never learn a concept because "it's next in the book." You learn it because 
 
 Three rules keep the tree honest:
 
-1. **No node without a felt problem.** Every lesson ends by *demonstrating* the failure its child edge describes. The learner watches it break before they're offered the fix.
-2. **Research gets reverse-engineered.** Most techniques exist because a researcher hit a wall and wrote a paper about the fix. The paper leads with the fix; we lead with the wall. Before adding any technique as a node, we must be able to answer: *what pain were its authors feeling?* — and write that pain as the edge, in plain English. If we can't articulate the edge, the node isn't ready to be added. (Example: GANs don't enter as "adversarial training, a novel idea" — they enter as "our generated images are blurry mud because averaging over possibilities makes mud; what if a critic judged realism instead?")
+1. **No node without a felt problem.** Every lesson ends by _demonstrating_ the failure its child edge describes. The learner watches it break before they're offered the fix.
+2. **Research gets reverse-engineered.** Most techniques exist because a researcher hit a wall and wrote a paper about the fix. The paper leads with the fix; we lead with the wall. Before adding any technique as a node, we must be able to answer: _what pain were its authors feeling?_ — and write that pain as the edge, in plain English. If we can't articulate the edge, the node isn't ready to be added. (Example: GANs don't enter as "adversarial training, a novel idea" — they enter as "our generated images are blurry mud because averaging over possibilities makes mud; what if a critic judged realism instead?")
 3. **One primary parent.** Some techniques answer several pains at once (diffusion fixes both GAN instability and VAE blur). The tree shows one primary edge; the lesson opens by acknowledging the other debts. We choose a readable tree over a technically complete diagram.
 
 Jargon policy: plain English is the primary text everywhere. The engineer's term for each idea appears once, in parentheses, so learners can connect what they built to what the world calls it — listed below as `(jargon: ...)`.
@@ -124,7 +124,7 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
 [language/01] LETTERS TO NUMBERS                                       (planned)
    Character IDs, one-slot-lit-up lists so 'z' isn't "bigger" than 'a'.
    Predict next char from one char: almost-names! (jargon: one-hot
-   encoding, bigram model)
+   encoding, bigram model, softmax, cross-entropy)
       │
       │  "One-hot claims every letter is a TOTAL STRANGER to every other.
       │   Shouldn't similar things sit near each other?"
@@ -175,7 +175,7 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
    The engineering that makes depth work, each shown failing without it:
    shortcut wires, re-centering, several small attentions side by side,
    a digest network after each round. That block, repeated. (jargon:
-   residuals, layer norm, multi-head attention, transformer block)
+   residuals, layer norm, multi-head attention, positional encoding, transformer block)
       │
       │  "Character-by-character, every text is enormously long — and the
       │   machine wastes capacity re-learning that q is followed by u.
@@ -310,27 +310,27 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
 
 ## Coverage map (requested concepts → nodes)
 
-| Concept | Node |
-|---|---|
-| Loss, gradient descent, learning rate | trunk/01–03 |
-| Activations, MLP, matrices | trunk/04–06 |
-| Autograd / backprop | trunk/07 |
-| Overfitting, held-out/test data | trunk/08 |
-| Precision/recall tradeoff | trunk/09 |
-| Batches, Adam, schedules | trunk/10 |
-| Ablation | trunk/11 |
-| Tokens (and why) | language/08 |
-| Embeddings | language/02 |
-| PCA, t-SNE, UMAP | language/03 |
-| RNN | language/05 |
-| Attention, transformers | language/06–07 |
-| Temperature, top-k, top-p | language/10 |
-| Fine-tuning | language/11 |
-| KV cache | language/12 |
-| Quantization | language/13 |
-| Sparse/sliding attention, MQA/GQA | language/14 |
-| CNN | vision/01 |
-| VAE | vision/04 |
-| GAN | vision/05 |
-| PatchGAN | vision/06 |
-| Diffusion | vision/07 |
+| Concept                               | Node           |
+| ------------------------------------- | -------------- |
+| Loss, gradient descent, learning rate | trunk/01–03    |
+| Activations, MLP, matrices            | trunk/04–06    |
+| Autograd / backprop                   | trunk/07       |
+| Overfitting, held-out/test data       | trunk/08       |
+| Precision/recall tradeoff             | trunk/09       |
+| Batches, Adam, schedules              | trunk/10       |
+| Ablation                              | trunk/11       |
+| Tokens (and why)                      | language/08    |
+| Embeddings                            | language/02    |
+| PCA, t-SNE, UMAP                      | language/03    |
+| RNN                                   | language/05    |
+| Attention, transformers               | language/06–07 |
+| Temperature, top-k, top-p             | language/10    |
+| Fine-tuning                           | language/11    |
+| KV cache                              | language/12    |
+| Quantization                          | language/13    |
+| Sparse/sliding attention, MQA/GQA     | language/14    |
+| CNN                                   | vision/01      |
+| VAE                                   | vision/04      |
+| GAN                                   | vision/05      |
+| PatchGAN                              | vision/06      |
+| Diffusion                             | vision/07      |

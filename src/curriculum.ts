@@ -179,7 +179,7 @@ export const NODES: CurriculumNode[] = [
 		problem: "Text isn't numbers. What do we feed in?",
 		solution:
 			"Character IDs, one-slot-lit-up lists so 'z' isn't \"bigger\" than 'a'. Predict next char from one char: almost-names!",
-		jargon: ["one-hot encoding", "bigram model"],
+		jargon: ["one-hot encoding", "bigram model", "softmax", "cross-entropy"],
 		status: "planned"
 	},
 	{
@@ -251,7 +251,13 @@ export const NODES: CurriculumNode[] = [
 			"One round of glancing is shallow. Stack rounds deep and it refuses to train — scores stall or explode.",
 		solution:
 			"The engineering that makes depth work: shortcut wires, re-centering, several small attentions side by side, a digest network after each round.",
-		jargon: ["residuals", "layer norm", "multi-head attention", "transformer block"],
+		jargon: [
+			"residuals",
+			"layer norm",
+			"multi-head attention",
+			"positional encoding",
+			"transformer block"
+		],
 		status: "planned"
 	},
 	{
