@@ -31,6 +31,8 @@ The page fetches `/source/<id>/main.ts` from the server and renders it (`site/co
 
 ## Voice rules
 
+The rubric behind every rule below is empathy. The reader is on a difficult journey through something they do not know yet. At every word, ask what their mental state is right now. Did we add a concept without explaining it? Did we overload them? Did we dip them into complexity and then back out into simplicity, so they do not panic? Long sentences are fine. Cognitive load is the thing to manage, and every rule below is one way of managing it.
+
 - **Take the reader on the journey**, one step at a time, in the order they would do the steps themselves: "Let's start with a simple game. Let's say there is a hidden formula…"
 - **Use the reader's existing words.** The reader knows what a formula is, so say "formula". Invent a term only when the lesson builds the thing the term names.
 - **Introduce one concrete thing and walk a straight line through it.** Do not stack abstractions. Do not pile up directions.
