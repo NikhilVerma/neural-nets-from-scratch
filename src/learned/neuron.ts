@@ -35,7 +35,7 @@ export class Neuron {
 		return meanSquaredMistake(predictions, actuals);
 	}
 
-	/** How much the score moves per unit turn of each knob, read off the score formula. */
+	/** How much the score moves per unit turn of the weight and of the bias, read off the score formula. */
 	slopesOn(examples: Example[]): Slopes {
 		if (examples.length === 0) return { weightSlope: 0, biasSlope: 0 };
 
@@ -52,7 +52,7 @@ export class Neuron {
 		};
 	}
 
-	/** Walk the examples once, then move both knobs downhill. */
+	/** Walk the examples once, then move the weight and the bias downhill. */
 	step(examples: Example[]): void {
 		const { weightSlope, biasSlope } = this.slopesOn(examples);
 		this.weight -= this.stepSize * weightSlope;

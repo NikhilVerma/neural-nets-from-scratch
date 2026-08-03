@@ -11,7 +11,7 @@ import {
 	tryOneGuess
 } from "./main.ts";
 
-// Pairs with no wobble in them, straight off the secret rule: y = 2x + 3.
+// Pairs with no wobble in them, straight off the secret formula: y = 2x + 3.
 const CLEAN_PAIRS = [
 	{ x: -2, y: -1 },
 	{ x: 0, y: 3 },
@@ -32,8 +32,8 @@ test("a bigger miss scores worse than a smaller one", () => {
 
 test("misses do not cancel out: too high on one pair, too low on the next still scores", () => {
 	const tilted = [
-		{ x: -1, y: 0 }, // the rule says 1, so this pair pulls the machine down
-		{ x: 1, y: 6 } //  the rule says 5, so this one pulls it back up
+		{ x: -1, y: 0 }, // the formula says 1, so this pair pulls the engine down
+		{ x: 1, y: 6 } //  the formula says 5, so this one pulls it back up
 	];
 	expect(mistakeScore(SECRET_FORMULA, tilted)).toBeGreaterThan(0);
 });
@@ -77,7 +77,7 @@ test("2,000 guesses get roughly right — and no closer", () => {
 		expect(multiplierMiss).toBeLessThan(0.7);
 		expect(addOnMiss).toBeLessThan(2);
 
-		// And no closer: it never actually settles on the rule. This failure is the lesson.
+		// And no closer: it never actually settles on the formula. This failure is the lesson.
 		const settled = multiplierMiss < 0.02 && addOnMiss < 0.02;
 		expect(settled).toBe(false);
 	}
@@ -115,9 +115,9 @@ test("the run the lesson quotes: 20,000 guesses from seed 7", () => {
 	expect(search.bestScore.toFixed(3)).toBe("0.379");
 	expect(search.best.multiplier.toFixed(3)).toBe("2.075");
 	expect(search.best.addOn.toFixed(3)).toBe("3.204");
-	// The wobble sets the scale: even the secret rule does not score zero.
+	// The wobble sets the scale: even the secret formula does not score zero.
 	expect(mistakeScore(SECRET_FORMULA, examples).toFixed(3)).toBe("0.429");
-	// And the best setting slips under the rule's own score by chasing that wobble.
+	// And the best setting slips under the formula's own score by chasing that wobble.
 	expect(search.bestScore).toBeLessThan(mistakeScore(SECRET_FORMULA, examples));
 });
 

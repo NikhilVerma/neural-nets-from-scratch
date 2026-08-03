@@ -15,7 +15,7 @@ If you find yourself writing a paragraph-long comment in a `.ts` file, it belong
 
 Every lesson page follows this arc, in this order:
 
-1. **Say what we will do, then start the game.** Open with this lesson's goal in a sentence or two, then walk straight into the smallest concrete setup the reader can hold in their head (a hidden formula, a machine with two knobs). The problem the lesson opens with must be the problem the lesson works on — never borrow a grander problem (spam, faces) as an opener the lesson won't deliver on.
+1. **Say what we will do, then start the game.** Open with this lesson's goal in a sentence or two, then walk straight into the smallest concrete setup the reader can hold in their head (a hidden formula, an engine that guesses two numbers). The problem the lesson opens with must be the problem the lesson works on — never borrow a grander problem (spam, faces) as an opener the lesson won't deliver on.
 2. **Build the solution in code, on the page.** The reader learns by reading the real code with prose between the pieces — this project's promise is _from concepts and from code_.
 3. **Watch it work** — the interactive demo.
 4. **Watch it break** — run into the next problem live, and state it plainly. It is the child edge, quoted from the manifest.

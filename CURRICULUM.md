@@ -25,24 +25,24 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
 
 ```
 [trunk/01] GUESS AND CHECK                                             (next)
-   A machine with two knobs guesses random settings and keeps the best.
+   An engine holding two numbers rolls them at random and keeps the best pair.
    Forces us to invent a way to score a guess. (jargon: loss, parameters)
       │
       │  "Random guessing never settles — can we guess smarter instead of more?"
       ▼
 [trunk/02] NUDGE AND KEEP                                              (next)
-   Tap each knob up/down, keep whichever reduces the mistake-score.
+   Tap each of the two numbers up/down, keep whichever reduces the mistake-score.
    It converges! (jargon: hill climbing, finite differences)
       │
-      │  "Two test-runs per knob, every step. Fine for 2 knobs — deadly for
-      │   thousands. Can we KNOW which way to nudge without trying?"
+      │  "Two test-runs per number, every step. Fine for 2 numbers — deadly
+      │   for thousands. Can we KNOW which way to nudge without trying?"
       ▼
 [trunk/03] FOLLOW THE SLOPE                                            (next — existing 1.1 code lands here)
    The mistake-score is a formula; formulas have slopes; slopes point
    downhill. One pass, no test-runs. (jargon: derivative, gradient descent,
    learning rate)
       │
-      │  "Our machine is multiply-then-add — a straight line. Feed it curved
+      │  "Our engine is multiply-then-add — a straight line. Feed it curved
       │   data and it fails forever — not slow, but INCAPABLE."
       ▼
 [trunk/04] BEND THE LINE                                               (planned)
@@ -61,7 +61,7 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
       │   Is there a tidier way to WRITE all this?"
       ▼
 [trunk/06] THE GRID TRICK                                              (planned)
-   Every layer is the same dance: grid of knobs × list of inputs. Name the
+   Every layer is the same dance: grid of numbers × list of inputs. Name the
    pattern once, write matmul once. Notation as a tool of thought.
    (jargon: matrix, vector, matmul)
       │
@@ -113,7 +113,7 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
       │
       ├── "Text isn't numbers. What do we feed in?"          → LANGUAGE branch
       └── "An image is a million numbers; our layers would    → VISION branch
-           need billions of knobs."
+           need billions of numbers to learn."
 ```
 
 ---
@@ -150,8 +150,8 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
    Feed the last N symbols' points, glued side by side, into a trunk
    network. Noticeably better text. (jargon: context window, n-gram MLP)
       │
-      │  "Widen the window and knobs balloon; anything past the edge falls
-      │   off a cliff. What if we carried a running SUMMARY instead?"
+      │  "Widen the window and the numbers to learn balloon; anything past it
+      │   falls off a cliff. What if we carried a running SUMMARY instead?"
       ▼
 [language/05] CARRY A MEMORY                                           (planned)
    Read left to right, folding each symbol into a running summary.
@@ -220,11 +220,11 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
       │     Generation goes from quadratic re-work to one new token's work.
       │     (jargon: KV cache)
       │
-      ├──"The knobs won't fit in memory. Do we truly need 32 decimal
-      │   places per knob? 16? 8? ...4 bits?"
+      ├──"The learned numbers won't fit in memory. Do we truly need 32
+      │   decimal places for each one? 16? 8? ...4 bits?"
       │  ▼
       │  [language/13] SMALLER NUMBERS                                 (future)
-      │     Round the knobs to coarser grids and measure what survives.
+      │     Round the learned numbers to coarser grids and see what survives.
       │     Surprisingly much. (jargon: quantization, int8/int4)
       │
       └──"Every new word glances at EVERY old word. Double the text,
@@ -242,8 +242,8 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
 
 ```
 [vision/01] THE SLIDING MAGNIFYING GLASS                               (planned)
-   One small pattern-detector slid across the whole image. Thousandfold
-   fewer knobs, and an edge is an edge ANYWHERE by construction.
+   One small pattern-detector slid across the whole image. A thousandfold
+   fewer numbers to learn, and an edge is an edge ANYWHERE by construction.
    (jargon: convolution, kernel/filter, CNN)
       │
       │  "Detectors fire on strokes and corners. How do strokes become

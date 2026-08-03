@@ -6,18 +6,19 @@ import { boundsForPoints, boundsForSeries, Plot, redrawOnResize } from "../../..
 import { makeRandom } from "../../../learned/random.ts";
 import { makeExamples } from "../../../learned/data.ts";
 import {
+	EXAMPLE_COUNT,
+	NOISE,
 	nudgeStep,
-	predict,
-	SECRET_RULE,
+	SECRET_FORMULA,
+	SEED,
+	START,
 	startClimb,
-	testRunsForTraining,
 	testRunsPerStep,
 	type Climb
 } from "./main.ts";
 
-const SEED = 7;
-const START = { multiplier: -3.2, addOn: 4.1 };
 const AUTO_STOPS_AT = 120;
+const STEPS_PRICED = 1000;
 
 // The demo markup lives in <template> tags and is only cloned into the page once the
 // lesson has been rendered, so nothing below may run before this line.
@@ -43,7 +44,7 @@ const scoreCanvas = requireCanvas("scoreChart");
 const scatterPlot = new Plot(scatterCanvas);
 const scorePlot = new Plot(scoreCanvas);
 
-const examples = makeExamples(SECRET_RULE, 60, 1, makeRandom(SEED));
+const examples = makeExamples(SECRET_FORMULA, EXAMPLE_COUNT, NOISE, makeRandom(SEED));
 let climb: Climb = startClimb(examples, START);
 let scoreHistory: number[] = [climb.score];
 let autoTimer: number | null = null;
@@ -53,7 +54,13 @@ function drawScatter(): void {
 	scatterPlot.setBounds(boundsForPoints(examples));
 	scatterPlot.axes("input", "output");
 	scatterPlot.scatter(examples, scatterPlot.color("--plot-point"));
-	scatterPlot.functionLine(x => predict(climb.knobs, x), scatterPlot.color("--plot-best"), 2.5);
+	// The engine's line: multiply by the first number, add the second.
+	const setting = climb.setting;
+	scatterPlot.functionLine(
+		x => setting.multiplier * x + setting.addOn,
+		scatterPlot.color("--plot-best"),
+		2.5
+	);
 }
 
 function drawScore(): void {
@@ -64,14 +71,14 @@ function drawScore(): void {
 }
 
 function update(): void {
-	const sign = climb.knobs.addOn < 0 ? "−" : "+";
+	const sign = climb.setting.addOn < 0 ? "−" : "+";
 	setText("score", climb.score.toFixed(4));
 	setText("steps", climb.steps.toLocaleString());
 	setText("testRuns", climb.testRuns.toLocaleString());
 	setText("nudgeSize", climb.nudgeSize.toPrecision(3));
 	setText(
-		"rule",
-		`×${climb.knobs.multiplier.toFixed(3)} ${sign} ${Math.abs(climb.knobs.addOn).toFixed(3)}`
+		"settingNow",
+		`×${climb.setting.multiplier.toFixed(3)} ${sign} ${Math.abs(climb.setting.addOn).toFixed(3)}`
 	);
 	drawScatter();
 	drawScore();
@@ -112,21 +119,22 @@ document.getElementById("resetClimb")?.addEventListener("click", () => {
 	update();
 });
 
-// ── the bill, as the knobs multiply ─────────────────────────────────────────
+// ── the bill, as the engine's numbers multiply ──────────────────────────────
 
-const knobSlider = document.getElementById("knobCount");
+const countSlider = document.getElementById("numberCount");
 
-function updateKnobCost(): void {
-	if (!(knobSlider instanceof HTMLInputElement)) return;
-	const knobs = Number(knobSlider.value);
-	setText("knobsValue", knobs.toLocaleString());
-	setText("perStep", testRunsPerStep(knobs).toLocaleString());
-	setText("perTraining", testRunsForTraining(knobs, 1000).toLocaleString());
+function updateBill(): void {
+	if (!(countSlider instanceof HTMLInputElement)) return;
+	const numberCount = Number(countSlider.value);
+	const perStep = testRunsPerStep(numberCount);
+	setText("numbersValue", numberCount.toLocaleString());
+	setText("perStep", perStep.toLocaleString());
+	setText("perTraining", (perStep * STEPS_PRICED).toLocaleString());
 }
 
-knobSlider?.addEventListener("input", updateKnobCost);
+countSlider?.addEventListener("input", updateBill);
 
 redrawOnResize(scatterCanvas, drawScatter);
 redrawOnResize(scoreCanvas, drawScore);
 update();
-updateKnobCost();
+updateBill();

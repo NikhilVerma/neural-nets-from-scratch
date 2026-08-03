@@ -24,13 +24,13 @@
         </div>
         <div class="legend">
           <span><i class="swatch dot"></i> the 60 examples</span>
-          <span><i class="swatch best"></i> what the machine says now</span>
+          <span><i class="swatch best"></i> what the engine says now</span>
           <span>right: the score after each pass</span>
         </div>
         <div class="controls">
           <button id="onePass" class="primary" type="button">One pass</button>
           <button id="autoTrain" type="button">Keep passing</button>
-          <button id="resetMachine" type="button">Start over</button>
+          <button id="resetEngine" type="button">Start over</button>
         </div>
         <div class="slider-row">
           <label for="stepSize">Step size (moving this starts the run over)</label>
@@ -50,11 +50,11 @@
             <dd id="stepSizeValue">0.06</dd>
           </div>
           <div>
-            <dt>Weight knob</dt>
+            <dt>Weight</dt>
             <dd id="weight">—</dd>
           </div>
           <div>
-            <dt>Bias knob</dt>
+            <dt>Bias</dt>
             <dd id="bias">—</dd>
           </div>
           <div>
@@ -74,7 +74,7 @@
         <div class="canvas-wrap"><canvas id="curveScatter"></canvas></div>
         <div class="legend">
           <span><i class="swatch dot"></i> the examples</span>
-          <span><i class="swatch best"></i> the best line this machine can find</span>
+          <span><i class="swatch best"></i> the best line this engine can find</span>
         </div>
         <div class="controls">
           <button id="curveToggle" class="primary" type="button">Feed it the curve</button>
@@ -106,41 +106,46 @@
       </figure>
     </template>
 
-    <details class="jargon">
-      <summary>What engineers call this</summary>
-      <dl>
-        <dt>w and b</dt>
-        <dd>
-          The two knobs, in every codebase you will ever read: <code>w</code> for weight (our
-          multiplier) and <code>b</code> for bias (our add-on).
-        </dd>
-        <dt>derivative</dt>
-        <dd>Our slope: how far one number moves when another moves by a hair.</dd>
-        <dt>gradient</dt>
-        <dd>All the slopes at once, one per knob, collected into a list.</dd>
-        <dt>gradient descent</dt>
-        <dd>The whole method on this page: work out the slopes, step against them, repeat.</dd>
-        <dt>learning rate</dt>
-        <dd>Our step size. The most fiddled-with number in the field.</dd>
-        <dt>epoch</dt>
-        <dd>One pass through the whole set of examples — one press of the button.</dd>
-        <dt>analytic vs numerical gradients</dt>
-        <dd>
-          Reading the slope off the formula (this lesson) versus measuring it by poking (last
-          lesson). Same answer; one of them is affordable.
-        </dd>
-        <dt>underfitting, model capacity</dt>
-        <dd>
-          What the curve demo shows: the machine is wrong not because it trained badly but because
-          it cannot represent the answer.
-        </dd>
-      </dl>
-    </details>
+    <!-- Injected where main.ts says `//! demo: jargon`, so it lands after the lesson. -->
+    <template data-demo="jargon">
+      <details class="jargon">
+        <summary>What engineers call this</summary>
+        <dl>
+          <dt>w and b</dt>
+          <dd>
+            Our two numbers, in every codebase you will ever read: <code>w</code> for weight (our
+            multiplier) and <code>b</code> for bias (our add-on).
+          </dd>
+          <dt>derivative</dt>
+          <dd>Our slope: how far one number moves when another moves by a hair.</dd>
+          <dt>gradient</dt>
+          <dd>
+            All the slopes at once, one for each number the engine holds, collected into a list.
+          </dd>
+          <dt>gradient descent</dt>
+          <dd>The whole method on this page: work out the slopes, step against them, repeat.</dd>
+          <dt>learning rate</dt>
+          <dd>Our step size. The most fiddled-with number in the field.</dd>
+          <dt>epoch</dt>
+          <dd>One pass through the whole set of examples — one press of the button.</dd>
+          <dt>analytic vs numerical gradients</dt>
+          <dd>
+            Reading the slope off the formula (this lesson) versus measuring it by poking (last
+            lesson). Same answer; one of them is affordable.
+          </dd>
+          <dt>underfitting, model capacity</dt>
+          <dd>
+            What the curve demo shows: the engine is wrong not because it trained badly but because
+            it cannot represent the answer.
+          </dd>
+        </dl>
+      </details>
+    </template>
 
     <footer class="onward">
       <p class="label">Next problem</p>
       <p class="question">
-        Our machine is multiply-then-add — a straight line. Feed it curved data and it fails forever
+        Our engine is multiply-then-add — a straight line. Feed it curved data and it fails forever
         — not slow, but incapable.
       </p>
       <p class="soon">Bend the line — coming soon.</p>

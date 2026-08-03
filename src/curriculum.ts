@@ -40,7 +40,7 @@ export const NODES: CurriculumNode[] = [
 		problem:
 			"There is a hidden formula: a number goes in, another comes out. All we have are examples of its inputs and outputs. Can we build an engine that figures the formula out for us?",
 		solution:
-			"An engine with two knobs guesses random settings and keeps the best. Forces us to invent a way to score a guess.",
+			"An engine that holds two numbers rolls them at random and keeps the best pair. Forces us to invent a way to score a guess.",
 		jargon: ["loss", "parameters"],
 		status: "built"
 	},
@@ -50,7 +50,8 @@ export const NODES: CurriculumNode[] = [
 		title: "Nudge and keep",
 		parent: "trunk/01-guess-and-check",
 		problem: "Random guessing never settles — can we guess smarter instead of more?",
-		solution: "Tap each knob up and down, keep whichever reduces the mistake-score. It converges!",
+		solution:
+			"Tap each of the two numbers up and down, keep whichever reduces the mistake-score. It converges!",
 		jargon: ["hill climbing", "finite differences"],
 		status: "built"
 	},
@@ -60,7 +61,7 @@ export const NODES: CurriculumNode[] = [
 		title: "Follow the slope",
 		parent: "trunk/02-nudge-and-keep",
 		problem:
-			"Two test-runs per knob, every step. Fine for 2 knobs — deadly for thousands. Can we know which way to nudge without trying?",
+			"Two test-runs per number, every step. Fine for 2 numbers — deadly for thousands. Can we know which way to nudge without trying?",
 		solution:
 			"The mistake-score is a formula; formulas have slopes; slopes point downhill. One pass, no test-runs.",
 		jargon: ["derivative", "gradient descent", "learning rate"],
@@ -72,7 +73,7 @@ export const NODES: CurriculumNode[] = [
 		title: "Bend the line",
 		parent: "trunk/03-follow-the-slope",
 		problem:
-			"Our machine is multiply-then-add — a straight line. Feed it curved data and it fails forever — not slow, but incapable.",
+			"Our engine is multiply-then-add — a straight line. Feed it curved data and it fails forever — not slow, but incapable.",
 		solution:
 			"Chaining two line-machines is still a line — we prove it. A tiny kink between them breaks the collapse.",
 		jargon: ["activation function", "ReLU"],
@@ -98,7 +99,7 @@ export const NODES: CurriculumNode[] = [
 		problem:
 			"Look at this code: loops in loops in loops, index soup. Is there a tidier way to write all this?",
 		solution:
-			"Every layer is the same dance: grid of knobs times list of inputs. Name the pattern once, write it once.",
+			"Every layer is the same dance: grid of numbers times list of inputs. Name the pattern once, write it once.",
 		jargon: ["matrix", "vector", "matmul"],
 		status: "planned"
 	},
@@ -223,7 +224,7 @@ export const NODES: CurriculumNode[] = [
 		title: "Carry a memory",
 		parent: "language/04-a-window-on-the-past",
 		problem:
-			"Widen the window and knobs balloon; anything past the edge falls off a cliff. What if we carried a running summary instead?",
+			"Widen the window and the numbers to learn balloon; anything past the edge falls off a cliff. What if we carried a running summary instead?",
 		solution:
 			"Read left to right, folding each symbol into a running summary. Elegant — and cursed: the whole past squeezed through one keyhole.",
 		jargon: ["RNN", "hidden state", "vanishing gradients"],
@@ -317,8 +318,9 @@ export const NODES: CurriculumNode[] = [
 		title: "Smaller numbers",
 		parent: "language/09-a-tiny-gpt",
 		problem:
-			"The knobs won't fit in memory. Do we truly need 32 decimal places per knob? 16? 8? …4 bits?",
-		solution: "Round the knobs to coarser grids and measure what survives. Surprisingly much.",
+			"The learned numbers won't fit in memory. Do we truly need 32 decimal places for each one? 16? 8? …4 bits?",
+		solution:
+			"Round the learned numbers to coarser grids and measure what survives. Surprisingly much.",
 		jargon: ["quantization", "int8/int4"],
 		status: "future",
 		side: true
@@ -344,9 +346,9 @@ export const NODES: CurriculumNode[] = [
 		title: "The sliding magnifying glass",
 		parent: "trunk/10-training-craft",
 		problem:
-			"An image is a million numbers; our layers would need billions of knobs — and would re-learn 'what an edge looks like' at every position.",
+			"An image is a million numbers; our layers would need billions of numbers to learn — and would re-learn 'what an edge looks like' at every position.",
 		solution:
-			"One small pattern-detector slid across the whole image. Thousandfold fewer knobs, and an edge is an edge anywhere, by construction.",
+			"One small pattern-detector slid across the whole image. A thousandfold fewer numbers to learn, and an edge is an edge anywhere, by construction.",
 		jargon: ["convolution", "kernel/filter", "CNN"],
 		status: "planned"
 	},

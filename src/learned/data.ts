@@ -5,8 +5,8 @@ export interface Example {
 	y: number;
 }
 
-/** A straight-line rule: multiply by one number, then add another. */
-export interface LineRule {
+/** A straight-line formula: multiply by one number, then add another. */
+export interface LineFormula {
 	multiplier: number;
 	addOn: number;
 }
@@ -19,9 +19,9 @@ function randomInput(random: () => number): number {
 	return INPUT_LOW + random() * (INPUT_HIGH - INPUT_LOW);
 }
 
-/** Examples that follow a straight-line rule, with a little wobble on top. */
+/** Examples that follow a straight-line formula, with a little wobble on top. */
 export function makeExamples(
-	rule: LineRule,
+	formula: LineFormula,
 	count: number,
 	noise: number,
 	random: () => number
@@ -30,13 +30,13 @@ export function makeExamples(
 	for (let index = 0; index < count; index++) {
 		const x = randomInput(random);
 		const wobble = (random() * 2 - 1) * noise;
-		examples.push({ x, y: rule.multiplier * x + rule.addOn + wobble });
+		examples.push({ x, y: formula.multiplier * x + formula.addOn + wobble });
 	}
 	return examples;
 }
 
 // Site plumbing, not curriculum: the curved data trunk/03 uses to show a straight line failing.
-export const CURVE_RULE = { squareTerm: 0.3, addOn: 1 };
+export const CURVE_FORMULA = { squareTerm: 0.3, addOn: 1 };
 
 /** Examples that bend: y = 0.3 * x * x + 1, with a little wobble on top. */
 export function makeCurveExamples(count: number, noise: number, random: () => number): Example[] {
@@ -44,7 +44,7 @@ export function makeCurveExamples(count: number, noise: number, random: () => nu
 	for (let index = 0; index < count; index++) {
 		const x = randomInput(random);
 		const wobble = (random() * 2 - 1) * noise;
-		examples.push({ x, y: CURVE_RULE.squareTerm * x * x + CURVE_RULE.addOn + wobble });
+		examples.push({ x, y: CURVE_FORMULA.squareTerm * x * x + CURVE_FORMULA.addOn + wobble });
 	}
 	return examples;
 }
