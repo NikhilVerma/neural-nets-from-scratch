@@ -31,7 +31,7 @@ The page fetches `/source/<id>/main.ts` from the server and renders it (`site/co
 
 ## Voice rules
 
-The rubric behind every rule below is empathy. The reader is on a difficult journey through something they do not know yet. At every word, ask what their mental state is right now. Did we add a concept without explaining it? Did we overload them? Did we dip them into complexity and then back out into simplicity, so they do not panic? Long sentences are fine. Cognitive load is the thing to manage, and every rule below is one way of managing it.
+The rubric behind every rule below is empathy. The reader is on a difficult journey through something they do not know yet. At every word, ask what their mental state is right now. Did we add a concept without explaining it? Did we overload them? Did we dip them into complexity and then back out into simplicity so that they do not panic? Long sentences are fine. Cognitive load is the thing to manage, and every rule below is one way of managing it.
 
 - **Take the reader on the journey**, one step at a time, in the order they would do the steps themselves: "Let's start with a simple game. Let's say there is a hidden formula…"
 - **Use the reader's existing words.** The reader knows what a formula is, so say "formula". Invent a term only when the lesson builds the thing the term names.
@@ -41,7 +41,7 @@ The rubric behind every rule below is empathy. The reader is on a difficult jour
 - Simple words chained plainly are good. The slop signature is filler technique: dramatic fragments, clauses merged with commas, sentences stretched with em dashes, drama without value.
 - **No claim without its evidence next to it**: a number, a demo, or the code itself. If a sentence has no evidence nearby, cut the sentence or prove it.
 - Ban "simply", "just", "magic", "elegant". The reader decides what's simple.
-- **Every piece of text must pass the slop linter.** `bun run slop` runs [SlopSift](https://slopsift.dev) over the whole repo — lesson prose, docs, code comments, UI copy. `scripts/slop.ts` disables one rule (`ai-style/mechanical-outline`, which trips on the curriculum's repeating problem→solution scaffolding). Fix every other finding in the text itself.
+- **Every piece of text must pass the slop linter.** `bun run slop` runs [SlopSift](https://slopsift.dev) over the whole repo — lesson prose, docs, code comments, UI copy. `scripts/slop.ts` disables one rule (`ai-style/mechanical-outline`, which trips on the curriculum's repeating problem→solution scaffolding). Fix every other warning in the text itself. Leave info-level notes to the writer's judgment: the linter lints, and the writer applies the context. The same softening word can be warmth in one sentence and noise in the next.
 
 ## Layout
 
