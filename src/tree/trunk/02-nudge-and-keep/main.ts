@@ -30,7 +30,7 @@ import is always a pointer back down the tree, never a mystery.
 
 - `makeRandom` — a repeatable stream of numbers: same seed, same numbers, same story every run.
 - `makeExamples` — 60 pairs from a straight-line rule, each knocked off the line by a random wobble.
-- `meanSquaredMistake` — the score: the average of the squared misses. Zero is perfect, bigger is worse.
+- `meanSquaredMistake` — the score: the average of the squared misses. Zero is perfect, and bigger is worse.
 */
 
 import { makeRandom } from "../../../learned/random.ts";
@@ -124,9 +124,9 @@ export function startClimb(examples: Example[], startingKnobs: Knobs): Climb {
 	};
 }
 
-// Score the machine with one knob turned by `turn`, then put that knob back exactly
-// where it was. Every call here is one full sweep of the examples, so every call adds
-// one to the bill.
+// Score the machine with one knob turned by `turn`, and put the knob back exactly
+// where it was afterwards. Every call here is one full sweep of the examples, so
+// every call adds one to the bill.
 function scoreWithKnobTurned(
 	climb: Climb,
 	examples: Example[],
@@ -187,7 +187,7 @@ the step helps or not.
 /*
 ## What it cost
 
-It settles, and it stays settled. Last lesson's machine never did.
+The climb settles and stays settled. Last lesson's machine never did.
 
 Now look at where the bill came from, because it is the whole of the next lesson. To
 find out which way to turn one knob, we ran the machine over every example twice: once

@@ -294,7 +294,7 @@ line and it can slide it up and down, and that is its entire vocabulary. You can
 search your way to a shape you cannot express.
 
 > Our machine is multiply-then-add — a straight line. Feed it curved data and it fails
-> forever. Not slow: incapable.
+> forever — not slow, but incapable.
 */
 
 /*
@@ -379,7 +379,7 @@ export function main(): void {
 	console.log("That is the best straight line through curved data, and the best straight line");
 	console.log("through curved data is nowhere near good enough.\n");
 	console.log("Next problem: our machine is multiply-then-add — a straight line. Feed it");
-	console.log("curved data and it fails forever. Not slow: incapable.");
+	console.log("curved data and it fails forever — not slow, but incapable.");
 }
 
 if (import.meta.main) {

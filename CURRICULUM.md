@@ -13,7 +13,7 @@ Three rules keep the tree honest:
 
 1. **No node without a felt problem.** Every lesson ends by *demonstrating* the failure its child edge describes. The learner watches it break before they're offered the fix.
 2. **Research gets reverse-engineered.** Most techniques exist because a researcher hit a wall and wrote a paper about the fix. The paper leads with the fix; we lead with the wall. Before adding any technique as a node, we must be able to answer: *what pain were its authors feeling?* — and write that pain as the edge, in plain English. If we can't articulate the edge, the node isn't ready to be added. (Example: GANs don't enter as "adversarial training, a novel idea" — they enter as "our generated images are blurry mud because averaging over possibilities makes mud; what if a critic judged realism instead?")
-3. **One primary parent.** Some techniques answer several pains at once (diffusion fixes both GAN instability and VAE blur). The tree shows one primary edge; the lesson opens by acknowledging the other debts. A tree you can read beats a diagram that's technically complete.
+3. **One primary parent.** Some techniques answer several pains at once (diffusion fixes both GAN instability and VAE blur). The tree shows one primary edge; the lesson opens by acknowledging the other debts. We choose a readable tree over a technically complete diagram.
 
 Jargon policy: plain English is the primary text everywhere. The engineer's term for each idea appears once, in parentheses, so learners can connect what they built to what the world calls it — listed below as `(jargon: ...)`.
 
@@ -43,7 +43,7 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
    learning rate)
       │
       │  "Our machine is multiply-then-add — a straight line. Feed it curved
-      │   data and it fails forever. Not slow: INCAPABLE."
+      │   data and it fails forever — not slow, but INCAPABLE."
       ▼
 [trunk/04] BEND THE LINE                                               (planned)
    Chaining two line-machines is still a line (we prove it). A tiny kink

@@ -5,7 +5,7 @@
 
 Try writing the steps for spam yourself. You start with "flag it if it mentions a prize". Then a real competition result gets binned, so you add an exception for senders you know. Then spam arrives from a friend whose account was stolen. Every patch you add breaks something that already worked, and the list never closes.
 
-Handwriting is worse. Write down what separates a 7 from a 1. A horizontal bar? Some people cross their 7s, some people put a serif on their 1s, and plenty of people write the bar so short it is a smudge.
+Handwriting is worse. Write down what separates a 7 from a 1. A horizontal crossbar? Some people cross their 7s, some people put a serif on their 1s, and plenty of people write the bar so short it is a smudge.
 
 What we do have is examples. Every "report spam" click is one. Every hand-filled postcode box that got read correctly is one. Millions of them, already answered by people, sitting in a file. So the question underneath this whole tree is whether the examples are enough on their own — whether the steps can be worked out backwards from the answers.
 */
@@ -27,7 +27,7 @@ We pick a rule. We keep it to ourselves.
 
 For this test we pick a rule and keep it to ourselves. We then pick sixty random numbers, run each one through the rule, and write down what comes out the other side. Those sixty pairs — number in, number out — are everything we hand over. The rule itself stays hidden. Looking at it would be cheating.
 
-Now the thing that has to find it, which we will call the machine. It has two knobs. Each knob holds a number. The machine takes the number we give it, multiplies that number by the first knob's value, then adds the second knob's value. Multiply, then add. That is the entire machine.
+Now we build the thing that has to find it — the machine. It has two knobs. Each knob holds a number. The machine takes the number we give it, multiplies that number by the first knob's value, then adds the second knob's value. Multiply, then add. That is the entire machine.
 
 If we set the two knob values correctly, the machine copies our rule. If the values are wrong, it talks nonsense.
 
@@ -162,13 +162,13 @@ export interface Search {
 	latestScore: number;
 	guessesTried: number;
 	guessesSinceImprovement: number;
-	lastImprovementAt: number; // the guess number that last beat the record
+	lastImprovementAt: number; // the guess number at which the record last fell
 }
 
 export function startSearch(): Search {
 	return {
 		best: { multiplier: 0, addOn: 0 },
-		bestScore: Infinity, // nothing to beat yet, so the first guess always wins
+		bestScore: Infinity, // no record yet; the first scored guess becomes the record
 		latest: { multiplier: 0, addOn: 0 },
 		latestScore: Infinity,
 		guessesTried: 0,
@@ -177,8 +177,8 @@ export function startSearch(): Search {
 	};
 }
 
-// One guess: roll two knob values, score them, keep them only if they beat the
-// record. Returns true when the record fell.
+// One guess: roll two knob values, score them, keep them only if they score lower
+// than the record. Returns true when the record fell.
 export function tryOneGuess(search: Search, examples: Example[], random: () => number): boolean {
 	const knobs = randomKnobs(random);
 	const score = mistakeScore(knobs, examples);
@@ -221,7 +221,7 @@ That is the whole method, and the demo below runs the code you just read on sixt
 /*
 ## Watch it break
 
-Keep pressing and watch one readout in particular: guesses since last improvement. It climbs, and it keeps climbing.
+Keep pressing and watch the readout that counts guesses since the last improvement. The count climbs and does not stop.
 
 Here is a run of 20,000 guesses, seed 7. The record fell at guess 1, 4, 40, 97, 1002, 1748, 10222 and 11565 — and then not once in the remaining 8,435 guesses.
 

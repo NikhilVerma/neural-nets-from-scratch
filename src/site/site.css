@@ -34,7 +34,7 @@
 	}
 }
 
-/* An explicit stamp on <html> beats the media query, in both directions. */
+/* The data-theme stamp on <html> must override the media query in both directions. */
 :root[data-theme="dark"] {
 	--bg: #151815;
 	--ink: #e3e7e2;
@@ -65,7 +65,7 @@
 	box-sizing: border-box;
 }
 
-/* Explicit `display` on a component would otherwise beat the browser's [hidden] rule. */
+/* A component's explicit `display` would otherwise override the browser's [hidden] rule. */
 [hidden] {
 	display: none !important;
 }

@@ -27,15 +27,16 @@ Every lesson page follows this arc, in this order:
 - Everything else is the real, runnable code, rendered highlighted between the prose. `//` comments belong to the code and appear inside the code blocks.
 - `//! demo: name` lines mark where the page injects the interactive demo declared as `<template data-demo="name">` in the lesson's `index.html` shell.
 
-The page fetches `/source/<id>/main.ts` from the server and renders it (`site/code.ts`). So the same file is three things at once: the lesson you read in the browser, the program you run with `bun run main.ts`, and the code you open in an editor. Editing it updates all three — a paraphrase cannot drift, because there is no paraphrase. `index.html` is only a shell: head, header, demo templates, jargon box, footer.
+The page fetches `/source/<id>/main.ts` from the server and renders it (`site/code.ts`). The same file is the lesson you read in the browser, the program you run with `bun run main.ts`, and the code you open in an editor. Edit it and all three update together, so the page shows the code exactly as it sits on disk. `index.html` stays a shell: head, header, demo templates, jargon box, footer.
 
 ## Voice rules
 
-- **Define before use.** No noun appears before the reader knows exactly what it is. If the lesson says "the machine", the machine has already been built in front of them.
+- **Define before use.** No noun appears before the reader knows exactly what it is. If the lesson says "the machine", the lesson has already built the machine in front of them.
 - Active voice, "we" and "you", present tense. One human explaining to another at a whiteboard.
-- **No claim without its evidence next to it** — a number, a demo, or the code itself. If a sentence asserts something the reader can't immediately check below it, cut it or prove it.
+- **No claim without its evidence next to it**: a number, a demo, or the code itself. If a sentence asserts something the reader can't immediately check below it, cut it or prove it.
 - Short sentences over clause chains. If a sentence works without a word, cut the word.
-- Never "simply", "just", "magic", "elegant" — the reader decides what's simple.
+- Never "simply", "just", "magic", "elegant". The reader decides what's simple.
+- **Every piece of text must pass the slop linter.** `bun run slop` runs [SlopSift](https://slopsift.dev) over the whole repo — lesson prose, docs, code comments, UI copy. `scripts/slop.ts` disables one rule (`ai-style/mechanical-outline`, which trips on the curriculum's repeating problem→solution scaffolding). Fix every other finding in the text itself.
 
 ## Layout
 
@@ -61,7 +62,7 @@ src/
     vision/
 ```
 
-Folder names ARE node ids (`trunk/03-follow-the-slope`), so the filesystem mirrors the tree.
+Folder names ARE node ids (`trunk/03-follow-the-slope`); the filesystem mirrors the tree.
 
 ## The graduation rule (imports)
 
@@ -90,7 +91,7 @@ Corollaries:
 - the server's routes (server globs `src/tree/*/*/index.html` and cross-checks against the manifest),
 - prev/next navigation on lesson pages.
 
-Adding a node = add a folder + add one manifest entry. Nothing else is touched.
+Adding a node = add a folder + add one manifest entry. You touch nothing else.
 
 ## Hard limits (on purpose)
 
@@ -104,5 +105,5 @@ Adding a node = add a folder + add one manifest entry. Nothing else is touched.
 
 - Tests use `bun test` (`import { test, expect } from "bun:test"`), discovered by glob — no hand-rolled runners, no per-node package scripts.
 - Every node works both ways: `bun run src/tree/<node>/main.ts` in a terminal (prints its story) and interactively in the browser.
-- A node's `lesson.test.ts` proves the node's *claims*, including the failure: if the lesson says "this cannot fit a curve," a test asserts the loss stays high. The failures are load-bearing; test them like features.
+- A node's `lesson.test.ts` proves the node's *claims*, including the failure: if the lesson says "this cannot fit a curve," a test asserts the loss stays high. The next lessons stand on those failures, so test them like features.
 - Prettier config as-is; format with `bun run prettify`.

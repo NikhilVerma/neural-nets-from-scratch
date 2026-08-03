@@ -50,8 +50,7 @@ export const NODES: CurriculumNode[] = [
 		title: "Nudge and keep",
 		parent: "trunk/01-guess-and-check",
 		problem: "Random guessing never settles — can we guess smarter instead of more?",
-		solution:
-			"Tap each knob up and down, keep whichever reduces the mistake-score. It converges!",
+		solution: "Tap each knob up and down, keep whichever reduces the mistake-score. It converges!",
 		jargon: ["hill climbing", "finite differences"],
 		status: "built"
 	},
@@ -73,7 +72,7 @@ export const NODES: CurriculumNode[] = [
 		title: "Bend the line",
 		parent: "trunk/03-follow-the-slope",
 		problem:
-			"Our machine is multiply-then-add — a straight line. Feed it curved data and it fails forever. Not slow: incapable.",
+			"Our machine is multiply-then-add — a straight line. Feed it curved data and it fails forever — not slow, but incapable.",
 		solution:
 			"Chaining two line-machines is still a line — we prove it. A tiny kink between them breaks the collapse.",
 		jargon: ["activation function", "ReLU"],
@@ -124,7 +123,13 @@ export const NODES: CurriculumNode[] = [
 			"Training score hits zero… and answers on fresh examples get worse. It's memorizing the examples, not learning the rule.",
 		solution:
 			"What overfitting is, and how to catch it: grade on examples the machine has never seen; stop when fresh-example scores turn.",
-		jargon: ["overfitting", "train/validation/test", "held-out data", "early stopping", "regularization"],
+		jargon: [
+			"overfitting",
+			"train/validation/test",
+			"held-out data",
+			"early stopping",
+			"regularization"
+		],
 		status: "planned"
 	},
 	{
@@ -132,8 +137,7 @@ export const NODES: CurriculumNode[] = [
 		branch: "trunk",
 		title: "When accuracy lies",
 		parent: "trunk/08-the-memorizing-machine",
-		problem:
-			"Our spam-catcher scores 99% by never flagging anything. When does accuracy lie?",
+		problem: "Our spam-catcher scores 99% by never flagging anything. When does accuracy lie?",
 		solution:
 			"Of what you flagged, how much was real? Of the real, how much did you catch? You can't max both — pick your poison per problem.",
 		jargon: ["precision", "recall", "precision/recall tradeoff", "thresholds"],
@@ -157,8 +161,7 @@ export const NODES: CurriculumNode[] = [
 		branch: "trunk",
 		title: "Remove a part and see",
 		parent: "trunk/10-training-craft",
-		problem:
-			"We've bolted on five tricks. Which ones actually matter — or are we cargo-culting?",
+		problem: "We've bolted on five tricks. Which ones actually matter — or are we cargo-culting?",
 		solution:
 			"The scientist's habit: take one piece out, retrain, compare honestly. Used everywhere from here on.",
 		jargon: ["ablation"],
@@ -289,8 +292,7 @@ export const NODES: CurriculumNode[] = [
 		branch: "language",
 		title: "Teaching it to talk",
 		parent: "language/10-how-to-choose-a-word",
-		problem:
-			"It completes text. It doesn't answer you. Why did ChatGPT feel different?",
+		problem: "It completes text. It doesn't answer you. Why did ChatGPT feel different?",
 		solution:
 			"Same machine, new diet: conversations. Start from trained weights instead of from scratch — works for any task, not just chat.",
 		jargon: ["fine-tuning", "transfer learning", "SFT", "instruction tuning", "RLHF"],
@@ -353,7 +355,7 @@ export const NODES: CurriculumNode[] = [
 		branch: "vision",
 		title: "Naming what it sees",
 		parent: "vision/01-the-sliding-magnifying-glass",
-		problem: "Detectors fire on strokes and corners. How do strokes become \"that's a 7\"?",
+		problem: 'Detectors fire on strokes and corners. How do strokes become "that\'s a 7"?',
 		solution:
 			"Detectors on detectors — strokes, shapes, digit parts — shrinking as you go, then a vote among ten names.",
 		jargon: ["pooling", "feature hierarchy", "image classification", "MNIST"],
@@ -390,7 +392,8 @@ export const NODES: CurriculumNode[] = [
 		parent: "vision/03-drawing-instead-of-naming",
 		problem:
 			"The blur comes from averaging. What if, instead of matching pixels, a critic judged whether the image looks real?",
-		solution: "Two networks trained against each other: one draws, one calls fakes. Sharpness at last.",
+		solution:
+			"Two networks trained against each other: one draws, one calls fakes. Sharpness at last.",
 		jargon: ["GAN", "generator", "discriminator", "adversarial training"],
 		status: "future"
 	},
@@ -400,7 +403,7 @@ export const NODES: CurriculumNode[] = [
 		title: "Judge it patch by patch",
 		parent: "vision/05-the-forger-and-the-detective",
 		problem:
-			"One verdict for the whole image is vague feedback — \"fake somewhere\" doesn't say where.",
+			'One verdict for the whole image is vague feedback — "fake somewhere" doesn\'t say where.',
 		solution:
 			"The detective grades every small patch separately — local, specific pressure toward realism.",
 		jargon: ["PatchGAN"],
@@ -421,8 +424,8 @@ export const NODES: CurriculumNode[] = [
 	}
 ];
 
-export const nodeById = new Map(NODES.map((node) => [node.id, node]));
+export const nodeById = new Map(NODES.map(node => [node.id, node]));
 
 export function childrenOf(id: string): CurriculumNode[] {
-	return NODES.filter((node) => node.parent === id);
+	return NODES.filter(node => node.parent === id);
 }

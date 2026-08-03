@@ -7,7 +7,8 @@
     "dev": "bun --hot src/server.ts",
     "start": "bun src/server.ts",
     "test": "bun test",
-    "prettify": "prettier --config .prettierrc.cjs --cache --cache-location .cache/prettier --write ."
+    "prettify": "prettier --config .prettierrc.cjs --cache --cache-location .cache/prettier --write .",
+    "slop": "bun scripts/slop.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
