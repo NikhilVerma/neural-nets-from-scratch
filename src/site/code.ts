@@ -133,7 +133,39 @@ function inline(md: string): string {
 		.replace(/\u0000(\d+)\u0000/g, (_, index: string) => codeSpans[Number(index)]!);
 }
 
-/** The few markdown shapes lesson prose is allowed: ##, ###, > quote, - list, paragraphs. */
+function tableHtml(block: string): string {
+	const rows = block
+		.split("\n")
+		.map(line => line.trim())
+		.filter(line => line.startsWith("|"))
+		.filter(line => !/^\|[\s\-|]+\|$/.test(line))
+		.map(line =>
+			line
+				.replace(/^\||\|$/g, "")
+				.split("|")
+				.map(cell => inline(cell.trim()))
+		);
+	const [head, ...body] = rows;
+	const headHtml = `<tr>${head!.map(cell => `<th>${cell}</th>`).join("")}</tr>`;
+	const bodyHtml = body
+		.map(cells => `<tr>${cells.map(cell => `<td>${cell}</td>`).join("")}</tr>`)
+		.join("");
+	return `<table class="prose-table"><thead>${headHtml}</thead><tbody>${bodyHtml}</tbody></table>`;
+}
+
+function mathHtml(block: string): string {
+	const lines = block
+		.split("\n")
+		.map(line => line.trim())
+		.filter(line => line !== "$$")
+		.map(line => escapeHtml(line).replace(/\^(\d+)/g, "<sup>$1</sup>"));
+	return `<div class="math">${lines.join("<br>")}</div>`;
+}
+
+/**
+ * The few markdown shapes lesson prose is allowed: ##, ###, > quote, - list,
+ * | tables, ~ footnote asides, $$ math blocks, paragraphs.
+ */
 export function miniMarkdown(text: string): string {
 	const blocks = text.split(/\n\s*\n/);
 	const html: string[] = [];
@@ -142,6 +174,11 @@ export function miniMarkdown(text: string): string {
 		if (!trimmed) continue;
 		if (trimmed.startsWith("### ")) html.push(`<h3>${inline(trimmed.slice(4))}</h3>`);
 		else if (trimmed.startsWith("## ")) html.push(`<h2>${inline(trimmed.slice(3))}</h2>`);
+		else if (trimmed.startsWith("~ "))
+			html.push(`<p class="aside">${inline(trimmed.slice(2).replace(/\n/g, " "))}</p>`);
+		else if (trimmed.startsWith("$$")) html.push(mathHtml(trimmed));
+		else if (trimmed.split("\n").every(l => l.trim().startsWith("|")))
+			html.push(tableHtml(trimmed));
 		else if (trimmed.split("\n").every(l => l.trim().startsWith(">")))
 			html.push(
 				`<blockquote class="problem">${inline(

@@ -2,7 +2,7 @@
 // ARCHITECTURE.md, so a renderer change cannot quietly change what lessons mean.
 
 import { test, expect } from "bun:test";
-import { parseLiterate, toSections, litPlan } from "./code.ts";
+import { parseLiterate, toSections, litPlan, miniMarkdown } from "./code.ts";
 
 const SAMPLE = [
 	"//! show: none",
@@ -123,4 +123,20 @@ test("hidden code is not nameable and does not join the lit plan", () => {
 	const names = sections.flatMap(s => s.items.flatMap(i => (i.kind === "code" ? [i.name] : [])));
 	expect(names).toEqual(["VISIBLE", "ALSO_VISIBLE"]);
 	expect(litPlan(sections).get(1)).toEqual(["VISIBLE", "ALSO_VISIBLE"]);
+});
+
+test("prose supports tables, footnote asides, and math blocks", () => {
+	const table = miniMarkdown("| in | out |\n|---|---|\n| 1 | 5 |\n| … | … |");
+	expect(table).toContain("<table");
+	expect(table).toContain("<th>in</th>");
+	expect(table).toContain("<td>5</td>");
+	expect(table).not.toContain("---");
+
+	const aside = miniMarkdown("~ For the curious: details live in main.ts.");
+	expect(aside).toBe('<p class="aside">For the curious: details live in main.ts.</p>');
+
+	const math = miniMarkdown("$$\ngap of 8 → 8 × 8 = 64\n2^2 = 4\n$$");
+	expect(math).toContain('class="math"');
+	expect(math).toContain("<sup>2</sup>");
+	expect(math).not.toContain("$$");
 });

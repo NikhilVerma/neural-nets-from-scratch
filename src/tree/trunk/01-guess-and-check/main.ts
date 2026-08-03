@@ -37,6 +37,20 @@ formula, and write down what comes out the other side. The engine only sees thos
 pairs of numbers and nothing else. It has to figure out what the formula is from those
 numbers alone.
 
+Here are the first five pairs, exactly as the engine receives them:
+
+| number in | number out |
+| --- | --- |
+| -4.88 | -7.64 |
+| 4.77 | 12.94 |
+| 0.21 | 3.24 |
+| -0.34 | 1.80 |
+| 0.53 | 4.53 |
+| … | … |
+
+~ Sharp eyes will notice the outputs sit a whisker off the formula: -4.88 doubled plus
+three is -6.76, yet we wrote down -7.64. That is deliberate, and explained just below.
+
 We agreed the hidden formula is one multiplication and one addition, so the engine
 holds a guess with that same shape: a number it multiplies by, and a number it adds on.
 The engine's job is to guess those two numbers correctly. If it gets them right, its
@@ -70,12 +84,14 @@ gets a lesson of its own.
 
 ### Dice we can re-roll
 
-We are about to lean on random numbers, and there is one practical catch. Every claim
-on this page says "this run did that", and if each reload of the page rolled different
-luck, you could never check our numbers against your own screen. So we roll our dice
-from a fixed starting number — a seed — and they hand back the same rolls every time.
-The rolling code lives in `main.ts` if you are curious; how it shuffles numbers is not
-today's lesson, so the page leaves it out.
+We are about to lean on random numbers, and there is one catch: if every visit rolled
+fresh numbers, this page would tell one story and your screen would tell another. We
+want you to be able to check every number we quote. So our dice are fixed: every run
+rolls the same numbers, on this page and on yours.
+
+~ For the curious: the dice start from a fixed number, called a seed, and the rolling
+code sits in `main.ts`. How it shuffles numbers is not today's lesson, so the page
+leaves it out.
 */
 
 //! hide
@@ -97,11 +113,19 @@ export function makeRandom(seed: number): () => number {
 ### The sixty pairs
 
 Now let's make the sixty pairs. We take sixty inputs between -5 and 5 and run each one
-through the secret formula. We also add a small wobble to every answer, at most 1 up or
-down, because real measurements are never exact — a scale reads a gram light, a sensor
-rounds off — and an engine that only works on spotless numbers would not be much of an
-engine. The wobble also means no pair of numbers can hit every example exactly, and
-that detail will matter in a minute.
+through the secret formula. Then, before writing each answer down, we wobble it a
+little — at most 1 up or down. That is the whisker you saw in the table.
+
+Is that cheating? It would be, if the formula stopped deciding the answers. It does
+not: every answer starts from the formula, and the wobble only smudges the copy we
+write down. We do it because the pairs an engine meets outside this game are always
+measured by something — a scale that reads a gram light, a sensor that rounds — and
+measured numbers arrive smudged. An engine that expects spotless numbers would fail on
+its first real job.
+
+The wobble has a side effect that will matter in a minute: since the written answers
+are not exactly on the formula, no guess can hit every pair dead on. Not even the true
+formula scores zero here.
 */
 
 export const INPUT_LOW = -5;
@@ -116,17 +140,6 @@ export function makeExamples(count: number, random: () => number): Example[] {
 		examples.push({ x, y: SECRET_FORMULA.multiplier * x + SECRET_FORMULA.addOn + wobble });
 	}
 	return examples;
-}
-
-/*
-### The engine's guess
-
-And here is the engine's guess itself, in one line of code: multiply by the first number,
-then add the second.
-*/
-
-export function runEngine(guess: Guess, x: number): number {
-	return guess.multiplier * x + guess.addOn;
 }
 
 /*
@@ -148,14 +161,28 @@ to zero, as if it made no mistakes at all. So before adding, we make every gap
 positive.
 
 There are two easy ways to do that. We could drop the minus sign, so -2 counts as 2.
-Or we could multiply each gap by itself, so 2 becomes 4 and -2 also becomes 4. Both
-fix the adding-up problem. We pick the second, called squaring, for one extra reason:
-it punishes big misses much harder than small ones. Miss by 2 and squaring charges 4;
-miss by 8 and it charges 64. Compare two guesses across sixty pairs: one misses every
-pair by 1 and pays 60, the other is perfect on fifty-nine pairs but misses one by 8
-and pays 64. Squaring makes the steady guess win, and that is the behaviour we want.
-Squaring has one more advantage, but it only makes sense in `trunk/03`, when we start
-asking this number for directions.
+Or we could multiply each gap by itself — called squaring — so 2 becomes 4 and -2 also
+becomes 4. Both fix the adding-up problem.
+
+We pick squaring, for one extra reason: it punishes big misses much harder than small
+ones.
+
+$$
+miss by 2 → 2 × 2 = 4
+miss by 8 → 8 × 8 = 64
+$$
+
+Compare two guesses across the sixty pairs. One misses every pair by 1. The other is
+perfect on fifty-nine pairs and misses one by 8.
+
+$$
+sixty small misses → 60 × (1 × 1) = 60
+one disaster → 59 × 0 + 8 × 8 = 64
+$$
+
+Squaring makes the steady guess win, and that is the behaviour we want. It has one
+more advantage, but it only makes sense in `trunk/03`, when we start asking this
+number for directions.
 
 So we square every pair's gap and average them over all sixty pairs, and we get one
 number for the whole guess. Let's call it the **mistake-score**. Lower is better. Zero
@@ -169,7 +196,8 @@ export function mistakeScore(guess: Guess, examples: Example[]): number {
 
 	let total = 0;
 	for (const example of examples) {
-		const mistake = runEngine(guess, example.x) - example.y;
+		// The engine's answer (multiply, then add) minus the answer we wrote down.
+		const mistake = guess.multiplier * example.x + guess.addOn - example.y;
 		total += mistake * mistake;
 	}
 	return total / examples.length;

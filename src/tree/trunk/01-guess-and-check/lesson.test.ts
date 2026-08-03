@@ -1,9 +1,11 @@
 import { test, expect } from "bun:test";
 import {
+	EXAMPLE_COUNT,
 	makeExamples,
 	makeRandom,
 	mistakeScore,
 	SECRET_FORMULA,
+	SEED,
 	startSearch,
 	tryManyGuesses,
 	tryOneGuess
@@ -117,4 +119,21 @@ test("the run the lesson quotes: 20,000 guesses from seed 7", () => {
 	expect(mistakeScore(SECRET_FORMULA, examples).toFixed(3)).toBe("0.429");
 	// And the best setting slips under the rule's own score by chasing that wobble.
 	expect(search.bestScore).toBeLessThan(mistakeScore(SECRET_FORMULA, examples));
+});
+
+// The lesson's table quotes the first five pairs; this pins them to the real run.
+test("the five pairs quoted in the table are the actual first five", () => {
+	const random = makeRandom(SEED);
+	const examples = makeExamples(EXAMPLE_COUNT, random);
+	const quoted: Array<[number, number]> = [
+		[-4.88, -7.64],
+		[4.77, 12.94],
+		[0.21, 3.24],
+		[-0.34, 1.8],
+		[0.53, 4.53]
+	];
+	for (const [index, [x, y]] of quoted.entries()) {
+		expect(examples[index]!.x).toBeCloseTo(x, 2);
+		expect(examples[index]!.y).toBeCloseTo(y, 2);
+	}
 });

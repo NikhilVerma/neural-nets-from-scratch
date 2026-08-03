@@ -679,3 +679,35 @@ pre[data-code] code {
 		transition: none;
 	}
 }
+
+/* Prose tables, footnote asides, and math blocks (see site/code.ts miniMarkdown). */
+.prose-table {
+	margin: 0 0 1.1rem;
+	border-collapse: collapse;
+	font-variant-numeric: tabular-nums;
+}
+.prose-table th,
+.prose-table td {
+	padding: 0.35rem 1.1rem 0.35rem 0;
+	text-align: left;
+	border-bottom: 1px solid var(--line);
+}
+.prose-table th {
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--soft);
+	font-weight: 600;
+}
+.math {
+	margin: 0 0 1.1rem;
+	padding: 0.6rem 1rem;
+	font-family: var(--serif);
+	font-size: 1.05rem;
+	text-align: center;
+	color: var(--ink);
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	font-variant-numeric: tabular-nums;
+}
