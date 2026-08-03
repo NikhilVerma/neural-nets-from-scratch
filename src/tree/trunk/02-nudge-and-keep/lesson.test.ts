@@ -105,7 +105,8 @@ test("the lesson-01 run quoted in this lesson's opening still happens exactly th
 	const search = startSearch();
 	const records: number[] = [];
 	for (let guess = 1; guess <= LESSON_01_BUDGET; guess++) {
-		if (tryOneGuess(search, examples, random)) records.push(guess);
+		tryOneGuess(search, examples, random);
+		if (search.guessesSinceImprovement === 0) records.push(guess);
 	}
 	expect(records).toEqual([1, 4, 40, 97, 1002, 1748, 10222, 11565]);
 	expect(LESSON_01_BUDGET - 11565).toBe(8435);

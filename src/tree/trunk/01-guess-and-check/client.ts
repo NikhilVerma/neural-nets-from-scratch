@@ -45,6 +45,8 @@ const scatterPlot = new Plot(scatterCanvas);
 let random = makeRandom(SEED);
 let examples = makeExamples(EXAMPLE_COUNT, random);
 let search = startSearch();
+// The latest roll is demo bookkeeping, so the page tracks it instead of the search.
+let latestRoll: Guess | null = null;
 let autoTimer: number | null = null;
 
 function drawScatter(): void {
@@ -54,9 +56,11 @@ function drawScatter(): void {
 	scatterPlot.scatter(examples, scatterPlot.color("--plot-point"));
 
 	if (search.guessesTried > 0) {
-		const latest = search.latest;
 		const best = search.best;
-		scatterPlot.functionLine(x => runEngine(latest, x), scatterPlot.color("--plot-latest"), 2);
+		if (latestRoll) {
+			const latest = latestRoll;
+			scatterPlot.functionLine(x => runEngine(latest, x), scatterPlot.color("--plot-latest"), 2);
+		}
 		scatterPlot.functionLine(x => runEngine(best, x), scatterPlot.color("--plot-best"), 2.5);
 	}
 }
@@ -78,12 +82,12 @@ function stopAuto(): void {
 }
 
 element("guessOnce").addEventListener("click", () => {
-	tryOneGuess(search, examples, random);
+	latestRoll = tryOneGuess(search, examples, random);
 	updateSearchReadouts();
 });
 
 element("guessHundred").addEventListener("click", () => {
-	tryManyGuesses(search, examples, random, 100);
+	latestRoll = tryManyGuesses(search, examples, random, 100);
 	updateSearchReadouts();
 });
 
@@ -94,7 +98,7 @@ element("autoGuess").addEventListener("click", () => {
 	}
 	element("autoGuess").textContent = "Stop";
 	autoTimer = window.setInterval(() => {
-		tryManyGuesses(search, examples, random, 40);
+		latestRoll = tryManyGuesses(search, examples, random, 40);
 		updateSearchReadouts();
 	}, 30);
 });
@@ -105,6 +109,7 @@ element("resetSearch").addEventListener("click", () => {
 	random = makeRandom(SEED);
 	examples = makeExamples(EXAMPLE_COUNT, random);
 	search = startSearch();
+	latestRoll = null;
 	updateSearchReadouts();
 });
 
@@ -133,12 +138,14 @@ element("runLong").addEventListener("click", () => {
 	staircase = [];
 	const recordsAt: number[] = [];
 	for (let guess = 1; guess <= LONG_RUN; guess++) {
-		if (tryOneGuess(longSearch, longExamples, longRandom)) recordsAt.push(guess);
+		tryOneGuess(longSearch, longExamples, longRandom);
+		if (longSearch.guessesSinceImprovement === 0) recordsAt.push(guess);
 		if (guess % SAMPLE_EVERY === 0) staircase.push(longSearch.bestScore);
 	}
 
+	const lastImprovementAt = longSearch.guessesTried - longSearch.guessesSinceImprovement;
 	setText("improvementCount", String(recordsAt.length));
-	setText("lastImprovement", longSearch.lastImprovementAt.toLocaleString());
+	setText("lastImprovement", lastImprovementAt.toLocaleString());
 	setText("wasted", longSearch.guessesSinceImprovement.toLocaleString());
 	setText("longScore", longSearch.bestScore.toFixed(3));
 	setText("recordList", recordsAt.map(guess => guess.toLocaleString()).join(", "));

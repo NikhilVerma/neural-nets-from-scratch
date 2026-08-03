@@ -202,56 +202,47 @@ export function randomGuess(random: () => number): Guess {
 /*
 The search has to remember a few things between guesses:
 
-- the best setting so far, and its mistake-score
-- the setting we rolled most recently, so the demo can draw it
-- how many guesses have gone by since the record last fell
+- the best guess so far, and its mistake-score
+- how many guesses it has tried
+- how many of those have gone by since the record last fell
 
 That last one turns out to be the whole lesson.
 */
 
-//! code: the-search
+//! hide
 export interface Search {
 	best: Guess;
 	bestScore: number;
-	latest: Guess;
-	latestScore: number;
 	guessesTried: number;
 	guessesSinceImprovement: number;
-	lastImprovementAt: number; // the guess number at which the record last fell
 }
 
 export function startSearch(): Search {
 	return {
 		best: { multiplier: 0, addOn: 0 },
 		bestScore: Infinity, // no record yet; the first scored guess becomes the record
-		latest: { multiplier: 0, addOn: 0 },
-		latestScore: Infinity,
 		guessesTried: 0,
-		guessesSinceImprovement: 0,
-		lastImprovementAt: 0
+		guessesSinceImprovement: 0
 	};
 }
+//! end
 
+//! code: the-search
 // One guess: roll two numbers, score them, keep them only if they score lower
-// than the record. Returns true when the record fell.
-export function tryOneGuess(search: Search, examples: Example[], random: () => number): boolean {
+// than the record. Returns the roll, so the demo can draw it.
+export function tryOneGuess(search: Search, examples: Example[], random: () => number): Guess {
 	const guess = randomGuess(random);
 	const score = mistakeScore(guess, examples);
-
-	search.latest = guess;
-	search.latestScore = score;
 	search.guessesTried++;
 
 	if (score < search.bestScore) {
 		search.best = guess;
 		search.bestScore = score;
 		search.guessesSinceImprovement = 0;
-		search.lastImprovementAt = search.guessesTried;
-		return true;
+	} else {
+		search.guessesSinceImprovement++;
 	}
-
-	search.guessesSinceImprovement++;
-	return false;
+	return guess;
 }
 
 //! hide
@@ -260,10 +251,12 @@ export function tryManyGuesses(
 	examples: Example[],
 	random: () => number,
 	count: number
-): void {
+): Guess {
+	let latest: Guess = search.best;
 	for (let index = 0; index < count; index++) {
-		tryOneGuess(search, examples, random);
+		latest = tryOneGuess(search, examples, random);
 	}
+	return latest;
 }
 //! end
 
@@ -357,7 +350,8 @@ export function main(): void {
 
 	console.log("guesses    best score   best setting                         dry spell");
 	for (let guess = 1; guess <= BUDGET; guess++) {
-		if (tryOneGuess(search, examples, random)) recordsAt.push(guess);
+		tryOneGuess(search, examples, random);
+		if (search.guessesSinceImprovement === 0) recordsAt.push(guess);
 		if (milestones.includes(guess)) {
 			const row = [
 				String(search.guessesTried).padStart(7),
@@ -372,7 +366,9 @@ export function main(): void {
 	console.log(`\nThe formula was ${describe(SECRET_FORMULA)}.`);
 	console.log(`After ${BUDGET} guesses the best setting is ${describe(search.best)}.\n`);
 	console.log(`The record fell at guess: ${recordsAt.join(", ")}`);
-	console.log(`The last one was guess ${search.lastImprovementAt}, so the final`);
+	console.log(
+		`The last one was guess ${search.guessesTried - search.guessesSinceImprovement}, so the final`
+	);
 	console.log(`${search.guessesSinceImprovement} guesses bought nothing.\n`);
 	console.log("The gaps between improvements do not grow steadily — they multiply. Each step");
 	console.log("down costs roughly ten times what the step before it cost. This search never");

@@ -104,7 +104,8 @@ test("the run the lesson quotes: 20,000 guesses from seed 7", () => {
 
 	const recordsAt: number[] = [];
 	for (let guess = 1; guess <= 20000; guess++) {
-		if (tryOneGuess(search, examples, random)) recordsAt.push(guess);
+		tryOneGuess(search, examples, random);
+		if (search.guessesSinceImprovement === 0) recordsAt.push(guess);
 	}
 
 	expect(recordsAt).toEqual([1, 4, 40, 97, 1002, 1748, 10222, 11565]);
