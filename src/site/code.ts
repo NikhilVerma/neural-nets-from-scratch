@@ -21,7 +21,7 @@ export type ShowCue = string[] | "none";
 
 type Chunk =
 	| { kind: "prose"; text: string; show?: ShowCue }
-	| { kind: "code"; text: string; name?: string }
+	| { kind: "code"; text: string; name?: string; hidden?: boolean }
 	| { kind: "demo"; name: string };
 
 export function parseLiterate(source: string): Chunk[] {
@@ -48,6 +48,21 @@ export function parseLiterate(source: string): Chunk[] {
 			flushCode();
 			chunks.push({ kind: "demo", name: demo[1]! });
 			i++;
+			continue;
+		}
+		// `//! hide` … `//! end` marks code that runs but never appears on the page:
+		// demo bookkeeping, printing helpers, machinery that is not the lesson.
+		if (/^\/\/!\s*hide\s*$/.test(line)) {
+			flushCode();
+			const hiddenLines: string[] = [];
+			i++;
+			while (i < lines.length && !/^\/\/!\s*end\s*$/.test(lines[i]!)) {
+				hiddenLines.push(lines[i]!);
+				i++;
+			}
+			i++;
+			const text = hiddenLines.join("\n").replace(/^\n+|\n+$/g, "");
+			if (text) chunks.push({ kind: "code", text, hidden: true });
 			continue;
 		}
 		// `//! code: name` names the code block that follows it.
@@ -205,7 +220,7 @@ function nameCodeChunks(chunks: Chunk[]): Map<Chunk, string> {
 	const taken = new Set<string>();
 	let count = 0;
 	for (const chunk of chunks) {
-		if (chunk.kind !== "code") continue;
+		if (chunk.kind !== "code" || chunk.hidden) continue;
 		count++;
 		const base = chunk.name ?? chunk.text.match(DECLARATION)?.[1] ?? `code-${count}`;
 		let name = base;
@@ -255,6 +270,9 @@ export function toSections(chunks: Chunk[], firstTitle = "Start"): Section[] {
 
 	for (const chunk of chunks) {
 		if (chunk.kind === "code") {
+			// Hidden code stays in the file and in the Copy button's output, but it
+			// never becomes an item, so neither layout renders it.
+			if (chunk.hidden) continue;
 			ensure().items.push({ kind: "code", text: chunk.text, name: codeNames.get(chunk)! });
 			continue;
 		}

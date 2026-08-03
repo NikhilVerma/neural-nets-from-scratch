@@ -90,3 +90,37 @@ test("demo markers stay in their section", () => {
 	const breakSection = sections.find(s => s.title === "Watch it break")!;
 	expect(breakSection.items.some(i => i.kind === "demo" && i.name === "staircase")).toBe(true);
 });
+
+const HIDDEN_SAMPLE = [
+	"/*",
+	"## Build",
+	"",
+	"The visible part.",
+	"*/",
+	"",
+	"export const VISIBLE = 1;",
+	"",
+	"//! hide",
+	"export function plumbing(): number {",
+	"\treturn 2;",
+	"}",
+	"//! end",
+	"",
+	"export const ALSO_VISIBLE = 3;",
+	""
+].join("\n");
+
+test("hidden code never becomes an item in either layout", () => {
+	const sections = toSections(parseLiterate(HIDDEN_SAMPLE));
+	const texts = sections.flatMap(s => s.items.flatMap(i => (i.kind === "code" ? [i.text] : [])));
+	expect(texts.join("\n")).not.toContain("plumbing");
+	expect(texts.join("\n")).toContain("VISIBLE");
+	expect(texts.join("\n")).toContain("ALSO_VISIBLE");
+});
+
+test("hidden code is not nameable and does not join the lit plan", () => {
+	const sections = toSections(parseLiterate(HIDDEN_SAMPLE));
+	const names = sections.flatMap(s => s.items.flatMap(i => (i.kind === "code" ? [i.name] : [])));
+	expect(names).toEqual(["VISIBLE", "ALSO_VISIBLE"]);
+	expect(litPlan(sections).get(1)).toEqual(["VISIBLE", "ALSO_VISIBLE"]);
+});

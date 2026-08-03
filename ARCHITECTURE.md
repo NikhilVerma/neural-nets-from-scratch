@@ -26,9 +26,10 @@ Every lesson page follows this arc, in this order:
 - Block comments starting at column 0 (`/* … */`) are the lesson's prose. They may use a little markdown: `##`/`###` headings, `>` for the problem quote, `-` lists, backtick code spans, `**bold**`.
 - Everything else is the real, runnable code, rendered highlighted between the prose. `//` comments belong to the code and appear inside the code blocks.
 - `//! demo: name` lines mark where the page injects the interactive demo declared as `<template data-demo="name">` in the lesson's `index.html` shell.
-- `//! code: name` names the code block that follows it. A block with no name takes the name of its first declared identifier (`mistakeScore`, `Knobs`).
-- `//! show: a, b` before a prose block is a subtitle cue for the code panel: while the reader is in that section, blocks `a` and `b` light up and the rest of the code fades. `//! show: none` lights nothing, so the whole panel sits faded. No cue keeps the default: the code that sits inside the section lights up. The full file stays on the page at all times; cues only choose what is lit.
-- The renderer throws on a cue that names a block that does not exist, the same way a missing demo template throws. A typo fails loudly instead of fading silently.
+- `//! code: name` names the code block that follows it. A block with no name takes the name of its first declared identifier (`mistakeScore`, `Guess`).
+- `//! show: a, b` before a prose block is a subtitle cue for the code panel: while the reader is in that section, blocks `a` and `b` light up and the rest of the code fades. `//! show: none` lights nothing, so the whole panel sits faded. No cue keeps the default: the code that sits inside the section lights up. Cues choose what is lit; the file itself stays on the page.
+- The renderer throws on a cue that names a block that does not exist, the same way a missing demo template throws. A typo fails loudly.
+- `//! hide` … `//! end` wraps code that runs but stays off the page: demo bookkeeping, printing helpers, machinery that is not the lesson. Hidden code remains in the file and in the Copy button's output; it has no name, so cues do not reach it.
 
 The page fetches `/source/<id>/main.ts` from the server and renders it (`site/code.ts`). The same file is the lesson you read in the browser, the program you run with `bun run main.ts`, and the code you open in an editor. Edit it and all three update together, so the page shows the code exactly as it sits on disk. `index.html` stays a shell: head, header, demo templates, jargon box, footer.
 

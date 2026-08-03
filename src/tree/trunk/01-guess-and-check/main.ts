@@ -33,18 +33,18 @@ To play this game honestly, we will write it in code, and we will play both side
 
 First, our side. We pick the formula and we keep it to ourselves: take the number,
 double it, then add three. We then pick sixty random numbers, run each one through the
-formula, and write down what comes out the other side. Those sixty pairs of numbers —
-one in, one out — are the only thing the engine will ever see. It is not allowed to look
-at the formula itself; that would be cheating.
+formula, and write down what comes out the other side. The engine only sees those sixty
+pairs of numbers and nothing else. It has to figure out what the formula is from those
+numbers alone.
 
-Now the engine's side. We agreed the hidden formula is one multiplication and one
-addition, so the engine holds a guess with that same shape: two knobs. The first knob
-holds the number it multiplies by, and the second knob holds the number it adds on.
-If the engine sets its two knobs to the right values, its guess behaves exactly like our
-formula. If the values are wrong, its answers drift away from ours.
+We agreed the hidden formula is one multiplication and one addition, so the engine
+holds a guess with that same shape: a number it multiplies by, and a number it adds on.
+The engine's job is to guess those two numbers correctly. If it gets them right, its
+guess behaves exactly like our formula. If they are wrong, its answers drift away from
+ours.
 
-So here is today's problem in one line: how does the engine find the right two knob
-values, when all it can look at is the sixty pairs?
+So here is today's problem in one line: how does the engine find the right two numbers,
+when all it can look at is the sixty pairs?
 */
 
 // A pair we hand over: x went in, y came out.
@@ -53,32 +53,32 @@ export interface Example {
 	y: number;
 }
 
-// The engine's guess at the formula: the two knobs.
-export interface Knobs {
+// The engine's guess at the formula: the two numbers it thinks the formula uses.
+export interface Guess {
 	multiplier: number;
 	addOn: number;
 }
 
 // "Double the number, then add three" — the formula we are hiding.
-export const SECRET_FORMULA: Knobs = { multiplier: 2, addOn: 3 };
+export const SECRET_FORMULA: Guess = { multiplier: 2, addOn: 3 };
 
 /*
-One thing to notice before we build: our hidden formula multiplies and adds, and the
-engine's guess also multiplies and adds — the shapes match, and that is on purpose.
-Today we are learning how to *search* for the right values, so we want a game the engine
-can win in principle. In `trunk/04` we will hand it a formula whose shape it cannot
-copy, and that failure gets a lesson of its own.
+To be fair, the engine is somewhat cheating here: it already knows that something gets
+multiplied and something gets added. That is okay. We will make it harder in later
+lessons — `trunk/04` hands it a formula whose shape it does not know, and that failure
+gets a lesson of its own.
 
 ### Dice we can re-roll
 
-We need random numbers twice in this lesson: once to pick the sixty inputs, and later to
-roll the engine's guesses. There is a catch with randomness, though. Every claim on this
-page says "this run did that", and if each reload of the page rolled different luck, you
-could never tell whether a change to the method helped or the dice happened to land
-better. So let's write our own dice. We hand them a starting number — a seed — and they
-hand back the same stream of "random" numbers every time.
+We are about to lean on random numbers, and there is one practical catch. Every claim
+on this page says "this run did that", and if each reload of the page rolled different
+luck, you could never check our numbers against your own screen. So we roll our dice
+from a fixed starting number — a seed — and they hand back the same rolls every time.
+The rolling code lives in `main.ts` if you are curious; how it shuffles numbers is not
+today's lesson, so the page leaves it out.
 */
 
+//! hide
 export function makeRandom(seed: number): () => number {
 	let state = seed >>> 0;
 	return function random(): number {
@@ -91,6 +91,7 @@ export function makeRandom(seed: number): () => number {
 		return ((scrambled ^ (scrambled >>> 14)) >>> 0) / 4294967296;
 	};
 }
+//! end
 
 /*
 ### The sixty pairs
@@ -99,8 +100,8 @@ Now let's make the sixty pairs. We take sixty inputs between -5 and 5 and run ea
 through the secret formula. We also add a small wobble to every answer, at most 1 up or
 down, because real measurements are never exact — a scale reads a gram light, a sensor
 rounds off — and an engine that only works on spotless numbers would not be much of an
-engine. The wobble also means no knob setting can hit every pair exactly, and that
-detail will matter in a minute.
+engine. The wobble also means no pair of numbers can hit every example exactly, and
+that detail will matter in a minute.
 */
 
 export const INPUT_LOW = -5;
@@ -120,48 +121,55 @@ export function makeExamples(count: number, random: () => number): Example[] {
 /*
 ### The engine's guess
 
-And here is the engine's guess itself, in one line of code: multiply by the first knob,
+And here is the engine's guess itself, in one line of code: multiply by the first number,
 then add the second.
 */
 
-export function runEngine(knobs: Knobs, x: number): number {
-	return knobs.multiplier * x + knobs.addOn;
+export function runEngine(guess: Guess, x: number): number {
+	return guess.multiplier * x + guess.addOn;
 }
 
 /*
 ## Right compared to what?
 
-A moment ago we said "if the engine sets its two knobs to the right values". Right
-compared to what? The engine cannot look at the formula, so it cannot check its knobs
-against the truth. All it has is the sixty pairs. So we need a number that says how
-wrong a knob setting is, built out of nothing but those pairs.
+A moment ago we said "the engine's job is to guess those two numbers correctly". But
+the engine cannot look at the formula, so it can never check its guess against the
+truth. All it has is the sixty pairs. So we need a number that says how wrong a guess
+is, built out of nothing but those pairs.
 
-Let's build that number together. Take one pair. Run its input through the engine's
-guess. Compare what came out with what should have come out. That gap is the guess's
-mistake on that one pair.
+Let's build that number together, with one pair in hand. Say the input is 4, and the
+formula's answer is 11. The engine's guess answers 13 instead. The gap between them is
+2: the guess landed 2 too high. On another pair the guess might land 2 too low, and
+then the gap is -2.
 
-There are two things to notice about the gap. First, it can be negative, because the
-guess overshoots as easily as it undershoots — and a setting that lands 3 too high on
-one pair and 3 too low on the next is not a good setting, so we cannot let the two
-cancel out. Second, a miss of 4 should hurt more than twice as much as a miss of 2,
-because one wild answer ruins an engine that is fine everywhere else.
+We want to add the gaps up across all sixty pairs, and those minus signs get in the
+way. A guess that lands 2 too high on one pair and 2 too low on the next would add up
+to zero, as if it made no mistakes at all. So before adding, we make every gap
+positive.
 
-Squaring the gap does both jobs at once. Negatives disappear, and a miss of 2 costs 4
-while a miss of 4 costs 16 — four times as bad, not twice.
+There are two easy ways to do that. We could drop the minus sign, so -2 counts as 2.
+Or we could multiply each gap by itself, so 2 becomes 4 and -2 also becomes 4. Both
+fix the adding-up problem. We pick the second, called squaring, for one extra reason:
+it punishes big misses much harder than small ones. Miss by 2 and squaring charges 4;
+miss by 8 and it charges 64. Compare two guesses across sixty pairs: one misses every
+pair by 1 and pays 60, the other is perfect on fifty-nine pairs but misses one by 8
+and pays 64. Squaring makes the steady guess win, and that is the behaviour we want.
+Squaring has one more advantage, but it only makes sense in `trunk/03`, when we start
+asking this number for directions.
 
 So we square every pair's gap and average them over all sixty pairs, and we get one
-number for the whole setting. Let's call it the **mistake-score**. Lower is better.
-Zero would mean the guess hits every pair dead on, but remember the wobble we added: on
+number for the whole guess. Let's call it the **mistake-score**. Lower is better. Zero
+would mean the guess hits every pair dead on, but remember the wobble we added: on
 these sixty pairs, even the secret formula itself scores 0.429, not 0. That is roughly
-the neighbourhood a good setting should reach.
+the neighbourhood a good guess should reach.
 */
 
-export function mistakeScore(knobs: Knobs, examples: Example[]): number {
+export function mistakeScore(guess: Guess, examples: Example[]): number {
 	if (examples.length === 0) return 0;
 
 	let total = 0;
 	for (const example of examples) {
-		const mistake = runEngine(knobs, example.x) - example.y;
+		const mistake = runEngine(guess, example.x) - example.y;
 		total += mistake * mistake;
 	}
 	return total / examples.length;
@@ -170,23 +178,21 @@ export function mistakeScore(knobs: Knobs, examples: Example[]): number {
 /*
 ## The simplest thing that could work
 
-We now have an engine holding two knobs, and a number that says how wrong any setting of
-those knobs is. So, how do we find good values?
+We now have an engine that holds a guess, and a number that says how wrong any guess
+is. So, how do we find the right two numbers?
 
-Let's start with the least clever idea anyone could propose. Roll both knobs at random.
-Score that setting. Roll again. Keep whichever setting has scored lowest so far, throw
-everything else away, and repeat. There is no reasoning in it, no sense of direction,
-and no memory beyond the single best setting we have seen.
-
-It is worth building precisely because it is the least clever thing that still counts as
-learning from examples. It sets the bar on the floor, every later lesson has to clear
-that bar, and we will be able to say by how much.
+Let's start with the least clever idea anyone could propose: roll both numbers at
+random, score that guess, and roll again, keeping whichever guess has scored lowest so
+far. Why random? Because at this point the engine knows nothing. It has no idea where
+the two numbers live, and rolling blindly is the one strategy that needs no knowledge
+at all. That makes it the honest place to start, and it sets the floor: every later
+lesson has to beat it, and we will be able to say by how much.
 */
 
-// We look for each knob somewhere between -5 and +5.
+// We look for each of the two numbers somewhere between -5 and +5.
 export const GUESS_RANGE = 5;
 
-export function randomKnobs(random: () => number): Knobs {
+export function randomGuess(random: () => number): Guess {
 	return {
 		multiplier: (random() * 2 - 1) * GUESS_RANGE,
 		addOn: (random() * 2 - 1) * GUESS_RANGE
@@ -205,9 +211,9 @@ That last one turns out to be the whole lesson.
 
 //! code: the-search
 export interface Search {
-	best: Knobs;
+	best: Guess;
 	bestScore: number;
-	latest: Knobs;
+	latest: Guess;
 	latestScore: number;
 	guessesTried: number;
 	guessesSinceImprovement: number;
@@ -226,18 +232,18 @@ export function startSearch(): Search {
 	};
 }
 
-// One guess: roll two knob values, score them, keep them only if they score lower
+// One guess: roll two numbers, score them, keep them only if they score lower
 // than the record. Returns true when the record fell.
 export function tryOneGuess(search: Search, examples: Example[], random: () => number): boolean {
-	const knobs = randomKnobs(random);
-	const score = mistakeScore(knobs, examples);
+	const guess = randomGuess(random);
+	const score = mistakeScore(guess, examples);
 
-	search.latest = knobs;
+	search.latest = guess;
 	search.latestScore = score;
 	search.guessesTried++;
 
 	if (score < search.bestScore) {
-		search.best = knobs;
+		search.best = guess;
 		search.bestScore = score;
 		search.guessesSinceImprovement = 0;
 		search.lastImprovementAt = search.guessesTried;
@@ -248,6 +254,7 @@ export function tryOneGuess(search: Search, examples: Example[], random: () => n
 	return false;
 }
 
+//! hide
 export function tryManyGuesses(
 	search: Search,
 	examples: Example[],
@@ -258,6 +265,7 @@ export function tryManyGuesses(
 		tryOneGuess(search, examples, random);
 	}
 }
+//! end
 
 //! show: the-search
 /*
@@ -288,7 +296,7 @@ step before it cost.
 
 The engine has not got worse at guessing. It is doing exactly the same thing at exactly
 the same speed. What shrank is the target: once the green line runs roughly through the
-cloud, only a tiny patch of knob values is any better than where it already stands, and
+cloud, only a tiny patch of number pairs is any better than where it already stands, and
 rolling dice into a tiny patch takes a very long time. Run it and watch the shape:
 */
 
@@ -306,9 +314,10 @@ One number in that run is worth a second look. The best setting scores 0.379, wh
 wobble in our answers rather than the formula underneath them. That lower score looks
 like a win. It is a warning sign, and `trunk/08` explains why.
 
-And look at what we are throwing away. Every guess produces a mistake-score. We read
-that score once, to answer "record or not?", and then we bin it. Two guesses that both
-lost still told us something: one of them lost by less. We never look at that.
+And look at what we are wasting. Every guess produces a mistake-score. We read that
+score once, to answer "record or not?", and then we throw it away. The two guesses
+could have taught us something — one lost by less than the other — but our engine
+never uses that. Right now, nothing it sees ever teaches it anything.
 
 > Random guessing never settles — can we guess smarter instead of more?
 */
@@ -321,8 +330,9 @@ This file is both the page you are reading and a program you can run.
 terminal and prints every number quoted above, so you can check them yourself.
 */
 
-function describe(knobs: Knobs): string {
-	return `multiplier ${knobs.multiplier.toFixed(3)}, add-on ${knobs.addOn.toFixed(3)}`;
+//! hide
+function describe(guess: Guess): string {
+	return `multiplier ${guess.multiplier.toFixed(3)}, add-on ${guess.addOn.toFixed(3)}`;
 }
 
 export const SEED = 7;
@@ -335,9 +345,9 @@ export function main(): void {
 
 	console.log("trunk/01 — Guess and check\n");
 	console.log("We pick a formula — double the number, then add three — and keep it to");
-	console.log("ourselves. The engine sees 60 pairs of numbers and nothing else. It holds two");
-	console.log("knobs: it multiplies the number we give it by the first, then adds the second.");
-	console.log("It rolls both knobs at random, scores the setting, and keeps the best one.\n");
+	console.log("ourselves. The engine sees 60 pairs of numbers and nothing else. It guesses");
+	console.log("two numbers: one it multiplies the input by, and one it adds on. It rolls");
+	console.log("both at random, scores the guess, and keeps the best one it has seen.\n");
 	console.log("The wobble we added means nothing scores 0. The formula itself scores");
 	console.log(`${mistakeScore(SECRET_FORMULA, examples).toFixed(3)} on these 60 pairs.\n`);
 
@@ -376,5 +386,6 @@ export function main(): void {
 if (import.meta.main) {
 	main();
 }
+//! end
 
 //! demo: jargon

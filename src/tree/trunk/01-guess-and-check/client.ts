@@ -12,7 +12,7 @@ import {
 	startSearch,
 	tryManyGuesses,
 	tryOneGuess,
-	type Knobs,
+	type Guess,
 	type Search
 } from "./main.ts";
 
@@ -32,9 +32,9 @@ function setText(id: string, text: string): void {
 	element(id).textContent = text;
 }
 
-function describe(knobs: Knobs): string {
-	const sign = knobs.addOn < 0 ? "−" : "+";
-	return `×${knobs.multiplier.toFixed(2)} ${sign} ${Math.abs(knobs.addOn).toFixed(2)}`;
+function describe(guess: Guess): string {
+	const sign = guess.addOn < 0 ? "−" : "+";
+	return `×${guess.multiplier.toFixed(2)} ${sign} ${Math.abs(guess.addOn).toFixed(2)}`;
 }
 
 // ── the live search ─────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ function updateSearchReadouts(): void {
 	setText("bestScore", search.guessesTried === 0 ? "—" : search.bestScore.toFixed(3));
 	setText("guessCount", search.guessesTried.toLocaleString());
 	setText("drySpell", search.guessesSinceImprovement.toLocaleString());
-	setText("bestKnobs", search.guessesTried === 0 ? "—" : describe(search.best));
+	setText("bestGuess", search.guessesTried === 0 ? "—" : describe(search.best));
 	drawScatter();
 }
 
