@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bend the line — trunk/04</title>
+    <link rel="stylesheet" href="../../../site/lesson.css" />
+  </head>
+  <body>
+    <header class="lesson-head">
+      <a class="crumb" href="/">↞ the tree</a>
+      <p class="node-id">trunk/04-bend-the-line</p>
+      <h1>Bend the line</h1>
+    </header>
+
+    <main id="lesson"></main>
+
+    <template data-demo="collapse">
+      <figure class="demo">
+        <div class="canvas-wrap"><canvas id="collapsePlot"></canvas></div>
+        <div class="legend">
+          <span><i class="swatch latest"></i> two straight steps</span>
+          <span><i class="swatch best"></i> the collapsed line</span>
+        </div>
+        <div class="controls">
+          <button id="toggleBend" class="primary" type="button">Add the bend</button>
+          <button id="resetCollapse" type="button">Reset the numbers</button>
+        </div>
+        <div class="slider-row">
+          <label for="firstWeight">First weight</label>
+          <input id="firstWeight" type="range" min="-3" max="3" step="0.1" value="1.7" />
+        </div>
+        <div class="slider-row">
+          <label for="firstBias">First bias</label>
+          <input id="firstBias" type="range" min="-3" max="3" step="0.1" value="-0.4" />
+        </div>
+        <div class="slider-row">
+          <label for="secondWeight">Second weight</label>
+          <input id="secondWeight" type="range" min="-3" max="3" step="0.1" value="-0.8" />
+        </div>
+        <div class="slider-row">
+          <label for="secondBias">Second bias</label>
+          <input id="secondBias" type="range" min="-3" max="3" step="0.1" value="2.1" />
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Mode</dt>
+            <dd id="collapseMode">two straight steps</dd>
+          </div>
+          <div>
+            <dt>Largest gap</dt>
+            <dd class="big" id="collapseGap">0</dd>
+          </div>
+        </dl>
+      </figure>
+    </template>
+
+    <template data-demo="training">
+      <figure class="demo">
+        <div class="canvas-row two-up">
+          <div class="canvas-wrap"><canvas id="curvePlot"></canvas></div>
+          <div class="canvas-wrap"><canvas id="scorePlot"></canvas></div>
+        </div>
+        <div class="legend">
+          <span><i class="swatch dot"></i> the 60 curved examples</span>
+          <span><i class="swatch latest"></i> best straight answer</span>
+          <span><i class="swatch best"></i> bent answer</span>
+          <span>right: the bent engine's score</span>
+        </div>
+        <div class="controls">
+          <button id="trainBent" class="primary" type="button">250 passes</button>
+          <button id="trainBentAuto" type="button">Keep training</button>
+          <button id="resetBent" type="button">Start over</button>
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Bent score</dt>
+            <dd class="big" id="bentScore">—</dd>
+          </div>
+          <div>
+            <dt>Straight floor</dt>
+            <dd id="straightScore">—</dd>
+          </div>
+          <div>
+            <dt>Passes</dt>
+            <dd id="bentPasses">0</dd>
+          </div>
+          <div>
+            <dt>Bends in use</dt>
+            <dd>4</dd>
+          </div>
+        </dl>
+      </figure>
+    </template>
+
+    <template data-demo="missing-input">
+      <figure class="demo">
+        <div class="slider-row">
+          <label for="secondInput">Second number</label>
+          <input id="secondInput" type="range" min="-5" max="5" step="1" value="4" />
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>First number</dt>
+            <dd>3</dd>
+          </div>
+          <div>
+            <dt>Second number</dt>
+            <dd id="secondInputValue">4</dd>
+          </div>
+          <div>
+            <dt>Answer we want</dt>
+            <dd class="big" id="wantedSum">7</dd>
+          </div>
+          <div>
+            <dt>Engine receives</dt>
+            <dd>3</dd>
+          </div>
+        </dl>
+      </figure>
+    </template>
+
+    <template data-demo="jargon">
+      <details class="jargon">
+        <summary>What engineers call this</summary>
+        <dl>
+          <dt>activation function</dt>
+          <dd>The operation placed between straight steps so they do not collapse into one.</dd>
+          <dt>ReLU</dt>
+          <dd>
+            The bend we used: keep positive numbers and replace negative numbers with zero. The name
+            is short for rectified linear unit.
+          </dd>
+          <dt>nonlinearity</dt>
+          <dd>Anything that breaks the straight-line collapse. ReLU is one nonlinearity.</dd>
+          <dt>piecewise linear</dt>
+          <dd>The bent engine's shape: several straight pieces joined at corners.</dd>
+          <dt>underfitting</dt>
+          <dd>
+            What lesson 03 showed on the curve: the engine cannot express the shape, even after
+            training finishes.
+          </dd>
+        </dl>
+      </details>
+    </template>
+
+    <footer class="onward">
+      <p class="label">Next problem</p>
+      <p class="question">
+        One input, one output is a toy. Real questions have hundreds of inputs and need more than
+        one opinion.
+      </p>
+      <p class="soon">A team of neurons — coming soon.</p>
+    </footer>
+
+    <script type="module" src="./client.ts"></script>
+  </body>
+</html>

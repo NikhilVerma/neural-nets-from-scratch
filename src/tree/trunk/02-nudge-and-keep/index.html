@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nudge and keep — trunk/02</title>
+    <link rel="stylesheet" href="../../../site/lesson.css" />
+  </head>
+  <body>
+    <header class="lesson-head">
+      <a class="crumb" href="/">↞ the tree</a>
+      <p class="node-id">trunk/02-nudge-and-keep</p>
+      <h1>Nudge and keep</h1>
+    </header>
+
+    <!-- The lesson is this node's main.ts, rendered here by site/code.ts. -->
+    <main id="lesson"></main>
+
+    <template data-demo="homing-in">
+      <figure class="demo">
+        <div class="canvas-row two-up">
+          <div class="canvas-wrap"><canvas id="scatter"></canvas></div>
+          <div class="canvas-wrap"><canvas id="scoreChart"></canvas></div>
+        </div>
+        <div class="legend">
+          <span><i class="swatch dot"></i> the 60 examples</span>
+          <span><i class="swatch best"></i> what the engine says now</span>
+          <span>right: the score after each step</span>
+        </div>
+        <div class="controls">
+          <button id="oneStep" class="primary" type="button">One step</button>
+          <button id="autoStep" type="button">Auto</button>
+          <button id="resetClimb" type="button">Start over</button>
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Score</dt>
+            <dd class="big" id="score">—</dd>
+          </div>
+          <div>
+            <dt>Steps</dt>
+            <dd id="steps">0</dd>
+          </div>
+          <div>
+            <dt>Test-runs so far</dt>
+            <dd id="testRuns">0</dd>
+          </div>
+          <div>
+            <dt>Nudge size</dt>
+            <dd id="nudgeSize">—</dd>
+          </div>
+          <div>
+            <dt>The engine right now</dt>
+            <dd id="settingNow">—</dd>
+          </div>
+        </dl>
+      </figure>
+    </template>
+
+    <template data-demo="the-bill">
+      <figure class="demo">
+        <div class="slider-row">
+          <label for="numberCount">How many numbers would a real engine have?</label>
+          <input id="numberCount" type="range" min="2" max="10000" step="1" value="2" />
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Numbers the engine holds</dt>
+            <dd id="numbersValue">2</dd>
+          </div>
+          <div>
+            <dt>Test-runs per step</dt>
+            <dd id="perStep">4</dd>
+          </div>
+          <div>
+            <dt>Test-runs for 1,000 steps</dt>
+            <dd class="big" id="perTraining">4,000</dd>
+          </div>
+        </dl>
+      </figure>
+    </template>
+
+    <!-- Injected where main.ts says `//! demo: jargon`, so it lands after the lesson. -->
+    <template data-demo="jargon">
+      <details class="jargon">
+        <summary>What engineers call this</summary>
+        <dl>
+          <dt>hill climbing</dt>
+          <dd>
+            The strategy on this page: from where you stand, look only at your immediate neighbours
+            and move to the best one. Downhill here, because low scores win.
+          </dd>
+          <dt>coordinate descent</dt>
+          <dd>The detail that we move one number at a time instead of both together.</dd>
+          <dt>finite differences</dt>
+          <dd>
+            Working out which way a formula is heading by evaluating it at two nearby points and
+            comparing — our up-nudge and our down-nudge, exactly.
+          </dd>
+          <dt>step size, step decay</dt>
+          <dd>Our nudge size, and the habit of halving it when progress stops.</dd>
+          <dt>function evaluations</dt>
+          <dd>Our test-runs. This is the number people count when they compare methods.</dd>
+        </dl>
+      </details>
+    </template>
+
+    <footer class="onward">
+      <p class="label">Next problem</p>
+      <p class="question">
+        Two test-runs per number, every step. Fine for 2 numbers — deadly for thousands. Can we know
+        which way to nudge without trying?
+      </p>
+      <p><a href="/trunk/03-follow-the-slope">Follow the slope →</a></p>
+    </footer>
+
+    <script type="module" src="./client.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guess and check — trunk/01</title>
+    <link rel="stylesheet" href="../../../site/lesson.css" />
+  </head>
+  <body>
+    <header class="lesson-head">
+      <a class="crumb" href="/">↞ the tree</a>
+      <p class="node-id">trunk/01-guess-and-check</p>
+      <h1>Guess and check</h1>
+    </header>
+
+    <!-- The lesson itself is main.ts, rendered in here by client.ts. -->
+    <main></main>
+
+    <!-- Injected where main.ts says `//! demo: search`. -->
+    <template data-demo="search">
+      <figure class="demo">
+        <div class="canvas-wrap"><canvas id="scatter"></canvas></div>
+        <div class="legend">
+          <span><i class="swatch dot"></i> the sixty pairs</span>
+          <span><i class="swatch latest"></i> latest guess</span>
+          <span><i class="swatch best"></i> best so far</span>
+        </div>
+        <div class="controls">
+          <button id="guessOnce" class="primary" type="button">Guess once</button>
+          <button id="guessHundred" type="button">Guess ×100</button>
+          <button id="autoGuess" type="button">Auto-guess</button>
+          <button id="resetSearch" type="button">Reset</button>
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Best mistake-score</dt>
+            <dd class="big" id="bestScore">—</dd>
+          </div>
+          <div>
+            <dt>Guesses tried</dt>
+            <dd id="guessCount">0</dd>
+          </div>
+          <div>
+            <dt>Guesses since last improvement</dt>
+            <dd id="drySpell">0</dd>
+          </div>
+          <div>
+            <dt>Best setting so far</dt>
+            <dd id="bestGuess">—</dd>
+          </div>
+        </dl>
+      </figure>
+    </template>
+
+    <!-- Injected where main.ts says `//! demo: staircase`. -->
+    <template data-demo="staircase">
+      <figure class="demo">
+        <div class="canvas-wrap short"><canvas id="staircase"></canvas></div>
+        <div class="controls">
+          <button id="runLong" class="primary" type="button">Run 20,000 guesses</button>
+        </div>
+        <dl class="readouts">
+          <div>
+            <dt>Improvements found</dt>
+            <dd id="improvementCount">—</dd>
+          </div>
+          <div>
+            <dt>Last improvement at guess</dt>
+            <dd id="lastImprovement">—</dd>
+          </div>
+          <div>
+            <dt>Guesses wasted since</dt>
+            <dd id="wasted">—</dd>
+          </div>
+          <div>
+            <dt>Best score after 20,000</dt>
+            <dd class="big" id="longScore">—</dd>
+          </div>
+        </dl>
+        <p class="aside">The record fell at guess: <span id="recordList">—</span></p>
+      </figure>
+    </template>
+
+    <!-- Injected where main.ts says `//! demo: jargon`, so it lands after the lesson. -->
+    <template data-demo="jargon">
+      <details class="jargon">
+        <summary>What engineers call this</summary>
+        <dl>
+          <dt>parameters</dt>
+          <dd>The two numbers the engine is allowed to change while it learns.</dd>
+          <dt>loss</dt>
+          <dd>
+            The mistake-score. A <em>high</em> loss is bad; the goal is always to make it small.
+          </dd>
+          <dt>mean squared error (MSE)</dt>
+          <dd>Our exact recipe for it: square every gap, then take the average.</dd>
+          <dt>random search</dt>
+          <dd>The method on this page — roll settings at random, keep the best one seen.</dd>
+          <dt>seeded pseudo-random generator</dt>
+          <dd>
+            Our five-line dice. Same seed, same numbers, so a run can be repeated exactly — what
+            people mean when they call a result reproducible.
+          </dd>
+        </dl>
+      </details>
+    </template>
+
+    <footer class="onward">
+      <p class="label">Next problem</p>
+      <p class="question">Random guessing never settles — can we guess smarter instead of more?</p>
+      <p><a href="/trunk/02-nudge-and-keep">Nudge and keep →</a></p>
+    </footer>
+
+    <script type="module" src="./client.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,713 @@
+/* Shared chrome for every lesson page. Plain CSS, no build step. */
+
+:root {
+	--bg: #f7f8f6;
+	--panel: #ffffff;
+	--ink: #212721;
+	--soft: #5a615a;
+	--line: #dde1dc;
+	--accent: #3e7a4c;
+	--accent-wash: #eaf1eb;
+	--code-kw: #4b5ec0;
+	--code-num: #a34a88;
+
+	--plot-axis: #c9d0c7;
+	--plot-label: #5a615a;
+	--plot-point: #6f7a70;
+	--plot-best: #3e7a4c;
+	--plot-latest: #a9b1a8;
+	--plot-target: #b7c4b8;
+
+	--serif: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+	--sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+	--mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #151815;
+		--panel: #1b1f1b;
+		--ink: #e3e7e2;
+		--soft: #a7aea7;
+		--line: #313731;
+		--accent: #6fae7d;
+		--accent-wash: #1e2a20;
+		--code-kw: #8b9ae0;
+		--code-num: #c97fb0;
+
+		--plot-axis: #3a423a;
+		--plot-label: #a7aea7;
+		--plot-point: #8d968d;
+		--plot-best: #6fae7d;
+		--plot-latest: #5b635b;
+		--plot-target: #46534733;
+	}
+}
+
+:root[data-theme="dark"] {
+	--bg: #151815;
+	--panel: #1b1f1b;
+	--ink: #e3e7e2;
+	--soft: #a7aea7;
+	--line: #313731;
+	--accent: #6fae7d;
+	--accent-wash: #1e2a20;
+	--code-kw: #8b9ae0;
+	--code-num: #c97fb0;
+
+	--plot-axis: #3a423a;
+	--plot-label: #a7aea7;
+	--plot-point: #8d968d;
+	--plot-best: #6fae7d;
+	--plot-latest: #5b635b;
+	--plot-target: #465347;
+}
+
+:root[data-theme="light"] {
+	--bg: #f7f8f6;
+	--panel: #ffffff;
+	--ink: #212721;
+	--soft: #5a615a;
+	--line: #dde1dc;
+	--accent: #3e7a4c;
+	--accent-wash: #eaf1eb;
+	--code-kw: #4b5ec0;
+	--code-num: #a34a88;
+
+	--plot-axis: #c9d0c7;
+	--plot-label: #5a615a;
+	--plot-point: #6f7a70;
+	--plot-best: #3e7a4c;
+	--plot-latest: #a9b1a8;
+	--plot-target: #b7c4b8;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0 1.5rem 5rem;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: var(--sans);
+	font-size: 17px;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* ── header ──────────────────────────────────────────────────────────────── */
+
+.lesson-head {
+	max-width: 65ch;
+	margin: 0 auto;
+	padding: 3rem 0 2rem;
+	border-bottom: 1px solid var(--line);
+}
+
+.crumb {
+	color: var(--soft);
+	font-size: 0.9rem;
+	text-decoration: none;
+}
+
+.crumb:hover {
+	color: var(--accent);
+}
+
+.node-id {
+	margin: 1.5rem 0 0.4rem;
+	color: var(--soft);
+	font-family: var(--mono);
+	font-size: 0.82rem;
+	letter-spacing: 0.02em;
+}
+
+.lesson-head h1 {
+	margin: 0;
+	font-size: clamp(2rem, 5vw, 2.7rem);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+}
+
+/* ── prose ───────────────────────────────────────────────────────────────── */
+
+main {
+	max-width: 65ch;
+	margin: 0 auto;
+}
+
+section {
+	margin: 3.5rem 0;
+}
+
+h2 {
+	margin: 0 0 1rem;
+	font-size: 0.82rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	color: var(--accent);
+}
+
+h3 {
+	margin: 2rem 0 0.5rem;
+	font-size: 1.05rem;
+	font-weight: 600;
+}
+
+p {
+	margin: 0 0 1.1rem;
+}
+
+.lede {
+	font-size: 1.1rem;
+}
+
+strong {
+	font-weight: 600;
+}
+
+ul {
+	margin: 0 0 1.1rem;
+	padding-left: 1.2rem;
+}
+
+li {
+	margin-bottom: 0.4rem;
+}
+
+.problem {
+	margin: 0 0 1.6rem;
+	padding: 0 0 0 1.1rem;
+	border-left: 3px solid var(--accent);
+	font-family: var(--serif);
+	font-style: italic;
+	font-size: 1.28rem;
+	line-height: 1.45;
+	color: var(--ink);
+}
+
+.aside {
+	color: var(--soft);
+	font-size: 0.95rem;
+}
+
+code,
+.num {
+	font-family: var(--mono);
+	font-size: 0.92em;
+}
+
+.num {
+	color: var(--accent);
+}
+
+/* ── demos ───────────────────────────────────────────────────────────────── */
+
+.demo {
+	margin: 1.5rem 0 0;
+	padding: 1.1rem;
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 10px;
+}
+
+.demo + .demo {
+	margin-top: 1rem;
+}
+
+.canvas-wrap {
+	position: relative;
+	width: 100%;
+	height: 300px;
+	background: var(--bg);
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.canvas-wrap.short {
+	height: 190px;
+}
+
+.canvas-wrap canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.canvas-row {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0.8rem;
+}
+
+@media (min-width: 780px) {
+	.canvas-row.two-up {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 0.9rem;
+}
+
+button {
+	padding: 0.45rem 0.9rem;
+	background: var(--panel);
+	color: var(--ink);
+	font: inherit;
+	font-size: 0.92rem;
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+button:hover {
+	border-color: var(--accent);
+	color: var(--accent);
+}
+
+button.primary {
+	background: var(--accent-wash);
+	border-color: var(--accent);
+	color: var(--accent);
+	font-weight: 600;
+}
+
+button:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+button:disabled:hover {
+	border-color: var(--line);
+	color: var(--ink);
+}
+
+.slider-row {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin-top: 1rem;
+	flex-wrap: wrap;
+}
+
+.slider-row label {
+	font-size: 0.92rem;
+	color: var(--soft);
+}
+
+input[type="range"] {
+	flex: 1 1 12rem;
+	min-width: 10rem;
+	accent-color: var(--accent);
+}
+
+.readouts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+	gap: 0.8rem;
+	margin: 1rem 0 0;
+	padding: 0.9rem 0 0;
+	border-top: 1px solid var(--line);
+}
+
+.readouts div {
+	margin: 0;
+}
+
+.readouts dt {
+	margin: 0 0 0.15rem;
+	font-size: 0.76rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--soft);
+}
+
+.readouts dd {
+	margin: 0;
+	font-family: var(--mono);
+	font-size: 1.15rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.readouts dd.big {
+	color: var(--accent);
+}
+
+.legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	margin-top: 0.7rem;
+	font-size: 0.85rem;
+	color: var(--soft);
+}
+
+.legend span {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+
+.swatch {
+	width: 1.1rem;
+	height: 0.2rem;
+	border-radius: 2px;
+	background: var(--soft);
+}
+
+.swatch.dot {
+	width: 0.55rem;
+	height: 0.55rem;
+	border-radius: 50%;
+	background: var(--plot-point);
+}
+
+.swatch.best {
+	background: var(--plot-best);
+}
+
+.swatch.latest {
+	background: var(--plot-latest);
+}
+
+/* ── jargon box ──────────────────────────────────────────────────────────── */
+
+.jargon {
+	margin: 3.5rem 0;
+	padding: 1rem 1.1rem;
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 10px;
+}
+
+.jargon summary {
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 0.95rem;
+	color: var(--soft);
+}
+
+.jargon summary:hover {
+	color: var(--accent);
+}
+
+.jargon dl {
+	margin: 1rem 0 0.2rem;
+}
+
+.jargon dt {
+	margin-top: 0.9rem;
+	font-family: var(--mono);
+	font-size: 0.9rem;
+	color: var(--accent);
+}
+
+.jargon dd {
+	margin: 0.15rem 0 0;
+	color: var(--soft);
+	font-size: 0.95rem;
+}
+
+/* ── footer ──────────────────────────────────────────────────────────────── */
+
+.onward {
+	max-width: 65ch;
+	margin: 0 auto;
+	padding-top: 2rem;
+	border-top: 1px solid var(--line);
+}
+
+.onward .label {
+	font-size: 0.76rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--soft);
+}
+
+.onward .question {
+	margin: 0.5rem 0 1rem;
+	font-family: var(--serif);
+	font-style: italic;
+	font-size: 1.15rem;
+	line-height: 1.45;
+}
+
+.onward a {
+	color: var(--accent);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.onward a:hover {
+	text-decoration: underline;
+}
+
+.onward .soon {
+	color: var(--soft);
+	font-size: 0.95rem;
+}
+
+/* The lesson's real code, pulled live from its own main.ts (see site/code.ts). */
+pre.code,
+pre[data-code] {
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	padding: 1rem 1.25rem;
+	overflow-x: auto;
+	font-family: var(--mono);
+	font-size: 0.82rem;
+	line-height: 1.6;
+	tab-size: 2;
+}
+pre[data-code] code {
+	font-family: inherit;
+}
+.tok-cmt {
+	color: var(--soft);
+	font-style: italic;
+}
+.tok-str {
+	color: var(--accent);
+}
+.tok-num {
+	color: var(--code-num);
+}
+.tok-kw {
+	color: var(--code-kw);
+}
+
+/* ── the two-panel lesson ────────────────────────────────────────────────────
+   Wide screens get three columns: a rail of the lesson's sections, the prose, and
+   one panel holding the whole of main.ts. Narrow screens get the single column
+   this file has always had, so the rules below only exist inside the media query.
+   site/code.ts picks the layout with the same breakpoint. */
+
+.lesson-section {
+	margin: 0 0 3.5rem;
+	scroll-margin-top: 1.5rem;
+}
+
+.lesson-section:last-child {
+	margin-bottom: 0;
+}
+
+@media (min-width: 1000px) {
+	:root {
+		--rail-w: 11.5rem;
+		--col-gap: 2.5rem;
+		--prose-w: 34rem;
+		--code-w: 44rem;
+		--layout-max: calc(11.5rem + 2.5rem + 34rem + 2.5rem + 44rem);
+	}
+
+	/* The head and the footer keep the page centred on the same box as the grid,
+	   so their text starts exactly where the prose column starts. */
+	.lesson-head,
+	.onward {
+		max-width: var(--layout-max);
+		padding-left: calc(var(--rail-w) + var(--col-gap));
+	}
+
+	main.lesson-panels {
+		display: grid;
+		/* The prose takes what it can up to its reading width; the code panel takes the
+		   rest, and at the widest the two land on exactly --prose-w and --code-w. */
+		grid-template-columns: var(--rail-w) minmax(20rem, var(--prose-w)) minmax(18rem, 1fr);
+		column-gap: var(--col-gap);
+		align-items: start;
+		max-width: var(--layout-max);
+		margin: 0 auto;
+	}
+
+	.prose-column {
+		min-width: 0;
+		padding-top: 3.5rem;
+	}
+
+	/* ── the section rail ── */
+
+	.rail {
+		position: sticky;
+		top: 1.5rem;
+		align-self: start;
+		max-height: calc(100vh - 3rem);
+		margin-top: 3.5rem;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	.rail-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.rail-list li {
+		margin: 0;
+	}
+
+	.rail-link {
+		display: grid;
+		grid-template-columns: 1.5rem 1fr;
+		gap: 0.5rem;
+		padding: 0.35rem 0.4rem 0.35rem 0.7rem;
+		border-left: 2px solid transparent;
+		color: var(--soft);
+		font-size: 0.82rem;
+		line-height: 1.35;
+		text-decoration: none;
+		transition:
+			color 0.2s ease,
+			border-color 0.2s ease;
+	}
+
+	.rail-num {
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		font-variant-numeric: tabular-nums;
+		opacity: 0.65;
+	}
+
+	/* Long headings clamp to three lines; the link's title holds the whole thing. */
+	.rail-label {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		overflow: hidden;
+		overflow-wrap: anywhere;
+	}
+
+	.rail-link:hover {
+		color: var(--ink);
+	}
+
+	.rail-link.is-active {
+		border-left-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.rail-link.is-active .rail-num {
+		opacity: 1;
+	}
+
+	.rail-link:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+		border-radius: 3px;
+	}
+
+	/* ── the code panel ── */
+
+	.code-panel {
+		position: sticky;
+		top: 1.5rem;
+		align-self: start;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		max-width: var(--code-w);
+		max-height: calc(100vh - 3rem);
+		margin-top: 3.5rem;
+		background: var(--panel);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		overflow: hidden;
+	}
+
+	.code-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.5rem 0.55rem 0.5rem 0.9rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.code-file {
+		font-family: var(--mono);
+		font-size: 0.78rem;
+		letter-spacing: 0.02em;
+		color: var(--soft);
+	}
+
+	.code-copy {
+		padding: 0.2rem 0.6rem;
+		font-size: 0.76rem;
+	}
+
+	.code-scroll {
+		position: relative;
+		flex: 1 1 auto;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding: 0.6rem 0 45vh;
+	}
+
+	.code-panel pre.code {
+		margin: 0;
+		padding: 0.45rem 1rem;
+		background: transparent;
+		border: 0;
+		border-left: 2px solid transparent;
+		border-radius: 0;
+		font-size: 0.78rem;
+		opacity: 0.35;
+		transition:
+			opacity 0.3s ease,
+			border-color 0.3s ease;
+	}
+
+	.code-panel pre.code.is-active {
+		opacity: 1;
+		border-left-color: var(--accent);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rail-link,
+	.code-panel pre.code {
+		transition: none;
+	}
+}
+
+/* Prose tables, footnote asides, and math blocks (see site/code.ts miniMarkdown). */
+.prose-table {
+	margin: 0 0 1.1rem;
+	border-collapse: collapse;
+	font-variant-numeric: tabular-nums;
+}
+.prose-table th,
+.prose-table td {
+	padding: 0.35rem 1.1rem 0.35rem 0;
+	text-align: left;
+	border-bottom: 1px solid var(--line);
+}
+.prose-table th {
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--soft);
+	font-weight: 600;
+}
+.math {
+	margin: 0 0 1.1rem;
+	padding: 0.6rem 1rem;
+	font-family: var(--serif);
+	font-size: 1.05rem;
+	text-align: center;
+	color: var(--ink);
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	font-variant-numeric: tabular-nums;
+}
