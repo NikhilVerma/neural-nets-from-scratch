@@ -26,7 +26,7 @@ When the maintainer says they left comments or notes on the site, read `reviews.
 - A renamed or banned word ("knob") sweeps prose, code identifiers, UI labels, and demos across every lesson. Grep the repo before calling the sweep done.
 - The visible code is the lesson, and each visible block should carry an idea. TypeScript ceremony (interfaces, zero-init boilerplate) and printing helpers belong behind `//! hide`; demo-only state belongs in the lesson's client.ts, so it never reaches the page at all.
 - Claims about page behavior need a real browser check: a screenshot or a DOM assertion via the chrome-devtools tools. The browser is shared with the maintainer's own tabs, so guard every injected script with a location check and leave the other tabs alone.
-- Dev servers: pick an unused BUN_PORT for throwaway checks and stop your own server by PID. A broad pkill for the server command kills other agents' servers too.
+- Dev servers: pick an unused `PORT` for throwaway checks and stop your own server by PID. A broad `pkill` for the server command kills other agents' servers too.
 
 ## Other rules that get missed
 

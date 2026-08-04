@@ -77,7 +77,7 @@ export const NODES: CurriculumNode[] = [
 		solution:
 			"Chaining two line-machines is still a line — we prove it. A tiny kink between them breaks the collapse.",
 		jargon: ["activation function", "ReLU"],
-		status: "next"
+		status: "built"
 	},
 	{
 		id: "trunk/05-a-team-of-neurons",
@@ -89,7 +89,7 @@ export const NODES: CurriculumNode[] = [
 		solution:
 			"Every input feeds every neuron; stack the teams. First real payoff: a 2-D classification no single neuron can solve.",
 		jargon: ["layer", "MLP", "hidden units"],
-		status: "planned"
+		status: "next"
 	},
 	{
 		id: "trunk/06-the-grid-trick",

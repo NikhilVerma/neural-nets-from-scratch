@@ -17,27 +17,27 @@ Three rules keep the tree honest:
 
 Jargon policy: plain English is the primary text everywhere. The engineer's term for each idea appears once, in parentheses, so learners can connect what they built to what the world calls it — listed below as `(jargon: ...)`.
 
-Statuses: **next** = build first · **planned** = designed, build later · **future** = sketched only.
+Statuses: **built** = lesson exists · **next** = build first · **planned** = designed, build later · **future** = sketched only.
 
 ---
 
 ## Trunk — how a machine learns anything
 
 ```
-[trunk/01] GUESS AND CHECK                                             (next)
+[trunk/01] GUESS AND CHECK                                             (built)
    An engine holding two numbers rolls them at random and keeps the best pair.
    Forces us to invent a way to score a guess. (jargon: loss, parameters)
       │
       │  "Random guessing never settles — can we guess smarter instead of more?"
       ▼
-[trunk/02] NUDGE AND KEEP                                              (next)
+[trunk/02] NUDGE AND KEEP                                              (built)
    Tap each of the two numbers up/down, keep whichever reduces the mistake-score.
    It converges! (jargon: hill climbing, finite differences)
       │
       │  "Two test-runs per number, every step. Fine for 2 numbers — deadly
       │   for thousands. Can we KNOW which way to nudge without trying?"
       ▼
-[trunk/03] FOLLOW THE SLOPE                                            (next — existing 1.1 code lands here)
+[trunk/03] FOLLOW THE SLOPE                                            (built)
    The mistake-score is a formula; formulas have slopes; slopes point
    downhill. One pass, no test-runs. (jargon: derivative, gradient descent,
    learning rate)
@@ -45,14 +45,14 @@ Statuses: **next** = build first · **planned** = designed, build later · **fut
       │  "Our engine is multiply-then-add — a straight line. Feed it curved
       │   data and it fails forever — not slow, but INCAPABLE."
       ▼
-[trunk/04] BEND THE LINE                                               (planned)
+[trunk/04] BEND THE LINE                                               (built)
    Chaining two line-machines is still a line (we prove it). A tiny kink
    between them breaks the collapse. (jargon: activation function, ReLU)
       │
       │  "One input, one output is a toy. Real questions have hundreds
       │   of inputs and need more than one opinion."
       ▼
-[trunk/05] A TEAM OF NEURONS                                           (planned)
+[trunk/05] A TEAM OF NEURONS                                           (next)
    Every input feeds every neuron; stack the teams. First real payoff:
    a 2-D classification no single neuron can solve. (jargon: layer, MLP,
    hidden units)

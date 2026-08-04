@@ -36,6 +36,7 @@ async function handleReview(req: Request): Promise<Response> {
 
 const routes: Record<string, HTMLBundle | ((req: Request) => Promise<Response>)> = {
 	"/": landing,
+	"/favicon.ico": async () => new Response(null, { status: 204 }),
 	"/source/*": serveLessonSource
 };
 if (process.env.NODE_ENV !== "production") routes["/review"] = handleReview;

@@ -1,4 +1,5 @@
 import { test, expect } from "bun:test";
+import { relu } from "./activation.ts";
 import { makeRandom, randomBetween } from "./random.ts";
 import { makeCurveExamples, makeExamples, INPUT_HIGH, INPUT_LOW } from "./data.ts";
 import { meanSquaredMistake } from "./scoring.ts";
@@ -82,4 +83,10 @@ test("a neuron learns a straight-line rule", () => {
 	expect(neuron.passes).toBe(300);
 	expect(scoreHistory).toHaveLength(300);
 	expect(scoreHistory[299]!).toBeLessThan(scoreHistory[0]!);
+});
+
+test("ReLU keeps positive numbers and replaces negative numbers with zero", () => {
+	expect(relu(3)).toBe(3);
+	expect(relu(0)).toBe(0);
+	expect(relu(-3)).toBe(0);
 });

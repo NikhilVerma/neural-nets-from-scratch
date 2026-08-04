@@ -23,7 +23,7 @@ Every lesson page follows this arc, in this order:
 
 **main.ts IS the page.** Each lesson's `main.ts` is written literate-style:
 
-- Block comments starting at column 0 (`/* … */`) are the lesson's prose. They may use a little markdown: `##`/`###` headings, `>` for the problem quote, `-` lists, backtick code spans, `**bold**`.
+- Block comments starting at column 0 (`/* … */`) are the lesson's prose. They may use a little markdown: `##`/`###` headings, `>` for the problem quote, `-` lists, `|` tables, `~` asides, `$$` display math, backtick code spans, and `**bold**`.
 - Everything else is the real, runnable code, rendered highlighted between the prose. `//` comments belong to the code and appear inside the code blocks.
 - `//! demo: name` lines mark where the page injects the interactive demo declared as `<template data-demo="name">` in the lesson's `index.html` shell.
 - `//! code: name` names the code block that follows it. A block with no name takes the name of its first declared identifier (`mistakeScore`, `Guess`).
@@ -105,7 +105,7 @@ Adding a node = add a folder + add one manifest entry. You touch nothing else.
 ## Hard limits (on purpose)
 
 - **Zero ML/math dependencies, forever.** The only runtime is Bun; styling is plain CSS we write ourselves (`src/site/`). If a lesson needs it, we write it. (Prettier stays as a dev tool.)
-- **Lesson prose lives in the lesson's `index.html`.** No markdown pipeline, no renderer dependency — the page a learner reads is a file they can open and edit.
+- **Lesson prose lives beside the runnable code in `main.ts`.** The small literate renderer in `src/site/code.ts` turns its block comments, code, and demo markers into the browser lesson. `index.html` only supplies the page shell and demo templates.
 - **Plain TypeScript, browser-runnable.** No WebGPU/WASM/kernel tricks, no worker-pool cleverness. When something is slow, slowness is _curriculum material_ (it motivates matrices, batching, honest training). When plain TS genuinely can't go further (real-scale training), the lesson says so out loud and points at the tools that can — we don't smuggle in performance engineering.
 - **Clarity beats speed, every time.** Stolen from micrograd/nanoGPT: "everything else is just efficiency."
 - **No configuration surface.** Nodes have hardcoded, readable constants, not option objects. A learner changes behavior by editing the code — that's the point.
